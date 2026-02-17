@@ -1,22 +1,3 @@
----
-author: Antonio Rodriguez
-created_at: 2026-02-17
-difficulty: beginner
-models_tested:
-- gpt-4o
-- claude-3-opus
-quality_score: 4.5
-slug: sales-follow-up-email
-tags:
-- marketing
-- email-draft
-- formal
-title: Sales Follow-Up Email
-updated_at: 2026-02-17
-use_count: 0
-visibility: public
----
-
 # MPL --- Specifications Document
 
 ## 1. Overview

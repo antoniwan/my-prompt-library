@@ -1,46 +1,48 @@
-# Astro Starter Kit: Basics
+# My Prompt Library (MPL)
 
-```sh
-npm create astro@latest -- --template basics
+A Git-native library of structured prompts. Markdown files in this repository are the single source of truth. No database.
+
+## Features
+
+- **Browse prompts** by list or tag
+- **Search** by keyword, tag, difficulty, or author (client-side, no server)
+- **Copy to clipboard** on each prompt page
+- **SEO** with per-prompt meta titles and descriptions
+- **Static-first** — static output; deployable to any static host
+
+## Run locally
+
+```bash
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Open [http://localhost:4321](http://localhost:4321).
 
-## 🚀 Project Structure
+## Build
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+```bash
+npm run build
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+Output is in `dist/`. Serve with any static host.
 
-## 🧞 Commands
+## Deploy
 
-All commands are run from the root of the project, from a terminal:
+Deploy the `dist/` folder to Vercel, Netlify, Cloudflare Pages, or any static host. No server-side runtime required.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Project structure
 
-## 👀 Want to learn more?
+- `content/prompts/` — Markdown prompt files (frontmatter + body)
+- `src/content.config.ts` — Content collection schema (Zod)
+- `src/pages/` — Astro pages (home, prompts, tags, search)
+- `src/layouts/` — Shared layout and nav
+- `AGENTS/` — Requirements, expectations, and specifications
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to submit prompts via Pull Request.
+
+## License
+
+See repository license.

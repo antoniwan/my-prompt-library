@@ -1,3 +1,12 @@
+---
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { title = "My Prompt Library", description = "A curated, Git-native library of structured prompts for sovereign AI workflows." } = Astro.props;
+---
+
 <!doctype html>
 <html lang="en">
 	<head>
@@ -6,18 +15,141 @@
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<meta name="description" content={description} />
+		<title>{title}</title>
 	</head>
 	<body>
-		<slot />
+		<a href="#main" class="skip-link">Skip to main content</a>
+		<header class="site-header">
+			<nav class="nav" aria-label="Main">
+				<a href="/" class="nav-brand">MPL</a>
+				<ul class="nav-links">
+					<li><a href="/prompts/">Prompts</a></li>
+					<li><a href="/tags/">Tags</a></li>
+					<li><a href="/search/">Search</a></li>
+				</ul>
+			</nav>
+		</header>
+		<main id="main" class="main">
+			<slot />
+		</main>
+		<footer class="site-footer">
+			<p>My Prompt Library — curated, version-controlled, portable.</p>
+		</footer>
 	</body>
 </html>
 
-<style>
+<style is:global>
+	:root {
+		--color-bg: #0f0f0f;
+		--color-surface: #1a1a1a;
+		--color-text: #e5e5e5;
+		--color-text-muted: #a3a3a3;
+		--color-accent: #7c3aed;
+		--color-accent-hover: #8b5cf6;
+		--color-border: #262626;
+		--font-sans: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+	}
+
+	html {
+		scroll-behavior: smooth;
+	}
+
 	html,
 	body {
 		margin: 0;
-		width: 100%;
-		height: 100%;
+		min-height: 100%;
+		background: var(--color-bg);
+		color: var(--color-text);
+		font-family: var(--font-sans);
+		line-height: 1.6;
+	}
+
+	.skip-link {
+		position: absolute;
+		top: -100%;
+		left: 0.5rem;
+		padding: 0.5rem 1rem;
+		background: var(--color-accent);
+		color: white;
+		text-decoration: none;
+		z-index: 100;
+		border-radius: 0.25rem;
+		transition: top 0.2s;
+	}
+
+	.skip-link:focus {
+		top: 0.5rem;
+		outline: 2px solid white;
+		outline-offset: 2px;
+	}
+
+	.site-header {
+		border-bottom: 1px solid var(--color-border);
+		background: var(--color-surface);
+	}
+
+	.nav {
+		max-width: 56rem;
+		margin: 0 auto;
+		padding: 0.75rem 1rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.nav-brand {
+		font-weight: 700;
+		font-size: 1.25rem;
+		color: var(--color-text);
+		text-decoration: none;
+	}
+
+	.nav-brand:hover,
+	.nav-brand:focus-visible {
+		color: var(--color-accent);
+	}
+
+	.nav-links {
+		display: flex;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		gap: 1.5rem;
+	}
+
+	.nav-links a {
+		color: var(--color-text-muted);
+		text-decoration: none;
+	}
+
+	.nav-links a:hover,
+	.nav-links a:focus-visible {
+		color: var(--color-accent);
+	}
+
+	.nav-links a:focus-visible {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 2px;
+	}
+
+	.main {
+		max-width: 56rem;
+		margin: 0 auto;
+		padding: 1.5rem 1rem 3rem;
+	}
+
+	.site-footer {
+		border-top: 1px solid var(--color-border);
+		background: var(--color-surface);
+		padding: 1rem;
+		text-align: center;
+	}
+
+	.site-footer p {
+		margin: 0;
+		font-size: 0.875rem;
+		color: var(--color-text-muted);
 	}
 </style>
