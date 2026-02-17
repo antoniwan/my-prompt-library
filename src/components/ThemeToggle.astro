@@ -1,0 +1,66 @@
+---
+---
+
+<button
+	type="button"
+	class="theme-toggle"
+	aria-label="Toggle light/dark theme"
+	title="Toggle theme"
+>
+	<span class="theme-toggle-icon" aria-hidden="true">
+		<span class="theme-icon-sun" hidden>☀</span>
+		<span class="theme-icon-moon">☽</span>
+	</span>
+</button>
+
+<script>
+	const THEME_KEY = "theme";
+
+	function getTheme(): "light" | "dark" {
+		if (typeof document === "undefined") return "dark";
+		const t = document.documentElement.getAttribute("data-theme");
+		return t === "light" || t === "dark" ? t : "dark";
+	}
+
+	function setTheme(theme: "light" | "dark") {
+		if (typeof document === "undefined") return;
+		document.documentElement.setAttribute("data-theme", theme);
+		try {
+			localStorage.setItem(THEME_KEY, theme);
+		} catch (_) {}
+		updateButton(theme);
+	}
+
+	function updateButton(theme: "light" | "dark") {
+		const btn = document.querySelector<HTMLButtonElement>(".theme-toggle");
+		if (!btn) return;
+		const sun = btn.querySelector<HTMLElement>(".theme-icon-sun");
+		const moon = btn.querySelector<HTMLElement>(".theme-icon-moon");
+		btn.setAttribute("aria-label", theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
+		if (sun) sun.hidden = theme !== "light";
+		if (moon) moon.hidden = theme !== "dark";
+	}
+
+	function init() {
+		const theme = getTheme();
+		updateButton(theme);
+
+		const btn = document.querySelector<HTMLButtonElement>(".theme-toggle");
+		btn?.addEventListener("click", () => {
+			const next = getTheme() === "dark" ? "light" : "dark";
+			setTheme(next);
+		});
+
+		window.addEventListener("storage", (e) => {
+			if (e.key === THEME_KEY && (e.newValue === "light" || e.newValue === "dark")) {
+				setTheme(e.newValue);
+			}
+		});
+	}
+
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", init);
+	} else {
+		init();
+	}
+</script>
