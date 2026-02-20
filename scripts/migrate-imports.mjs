@@ -185,6 +185,8 @@ function main() {
 
 	console.log(`Found ${files.length} file(s) in imports/. ${dryRun ? "[DRY RUN]" : ""}\n`);
 
+	let ok = 0;
+	let failed = 0;
 	for (const filePath of files) {
 		const rel = path.relative(ROOT, filePath);
 		try {
@@ -192,12 +194,25 @@ function main() {
 			const outRel = path.relative(ROOT, outPath);
 			if (dryRun) {
 				console.log(`  [dry] ${rel} → ${outRel} (slug: ${slug})`);
+				ok++;
 			} else {
 				fs.writeFileSync(outPath, outContent, "utf-8");
 				console.log(`  ✓ ${rel} → ${outRel}`);
+				ok++;
 			}
 		} catch (err) {
 			console.error(`  ✗ ${rel}: ${err.message}`);
+			failed++;
+		}
+	}
+
+	if (dryRun) {
+		console.log(`\nWould migrate ${ok} file(s). Run without --dry-run to write.`);
+	} else {
+		console.log(`\nDone. ${ok} file(s) written to content/prompts/. Run \`pnpm run build\` to verify.`);
+		if (failed > 0) {
+			console.error(`${failed} file(s) failed.`);
+			process.exit(1);
 		}
 	}
 }

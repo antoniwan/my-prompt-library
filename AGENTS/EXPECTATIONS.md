@@ -20,7 +20,7 @@ This is not a prompt dumping ground.
 Prompts are: - Markdown - Version-controlled - Portable - Owned by the
 repository
 
-No lock-in.
+No lock-in. The **imports** workflow lets users bring prompts from other tools (e.g. Obsidian, Notion) into the repository format; see [REQUIREMENTS §1.8](REQUIREMENTS.md#18-imports--migration) and [SPEC §9](SPECIFICATIONS.md#9-imports-and-migration).
 
 ### 2.2 Curation Over Quantity
 

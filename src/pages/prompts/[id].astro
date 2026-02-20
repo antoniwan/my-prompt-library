@@ -13,6 +13,14 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
 
+// Ensure Markdown tab shows raw source (with # headers): escape so it is never interpreted as HTML
+const rawMarkdown = typeof entry.body === "string" ? entry.body : "";
+const escapedMarkdown = rawMarkdown
+	.replace(/&/g, "&amp;")
+	.replace(/</g, "&lt;")
+	.replace(/>/g, "&gt;")
+	.replace(/"/g, "&quot;");
+
 const title = `${entry.data.title} — My Prompt Library`;
 const description =
 	entry.data.summary ||
@@ -101,7 +109,7 @@ const structuredData = {
 			class="prompt-tabpanel prompt-tabpanel--hidden"
 			hidden
 		>
-			<pre id="prompt-text" class="prompt-text" aria-label="Full prompt text">{entry.body}</pre>
+			<pre id="prompt-text" class="prompt-text" aria-label="Full prompt text"><code set:html={escapedMarkdown}></code></pre>
 		</div>
 
 		<footer class="prompt-meta-footer">
@@ -399,6 +407,13 @@ const structuredData = {
 		white-space: pre-wrap;
 		word-break: break-word;
 		overflow-x: auto;
+	}
+
+	.prompt-text code {
+		font-family: inherit;
+		font-size: inherit;
+		background: none;
+		padding: 0;
 	}
 
 	.visually-hidden {

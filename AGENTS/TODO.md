@@ -55,6 +55,15 @@ Update this file when completing work or when requirements/specifications change
 | Done | All prompts require maintainer approval | REQUIREMENTS §1.6 |
 | Done | Author attribution required | REQUIREMENTS §1.6 |
 
+### §1.8 Imports / Migration
+
+| Status | Item | Source |
+|--------|------|--------|
+| Done | Imports folder for user prompt files (Obsidian, etc.) | REQUIREMENTS §1.8 |
+| Done | Migration script converts to content collection format with required frontmatter | REQUIREMENTS §1.8 |
+| Done | Optional value inference/enhancement (title, tags from #hashtags, summary) | REQUIREMENTS §1.8 |
+| Done | Migrated prompts subject to same governance if contributed via PR | REQUIREMENTS §1.8 |
+
 ### §2 Non-Functional, §3 Security, §4 Constraints
 
 | Status | Item | Source |
@@ -109,11 +118,19 @@ Update this file when completing work or when requirements/specifications change
 | Todo | Sub-100ms TTFB on static host (verify on deploy) | SPEC §8 |
 | Todo | Fully accessible (WCAG AA) | SPEC §8 |
 
-### §9 Future Extensibility
+### §9 Imports and Migration
 
 | Status | Item | Source |
 |--------|------|--------|
-| — | Parameterized prompts; CLI; VS Code; API; auth (v2) | SPEC §9 (optional) |
+| Done | imports/ folder and README workflow | SPEC §9 |
+| Done | Migration script (pnpm run migrate); frontmatter mapping; output to content/prompts | SPEC §9 |
+| Done | Optional tag enhancement from #hashtags; quoted dates for schema | SPEC §9 |
+
+### §10 Future Extensibility
+
+| Status | Item | Source |
+|--------|------|--------|
+| — | Parameterized prompts; CLI; VS Code; API; auth (v2) | SPEC §10 (optional) |
 
 ---
 

@@ -63,7 +63,9 @@ Example:
 
 /content /prompts sales-follow-up-email.md meeting-summary.md
 
-/src /pages /prompts /tags /components /layouts
+/imports User-added prompt files (e.g. from Obsidian); not part of the built site until migrated.
+
+/src /pages /prompts /tags /components /layouts /scripts (e.g. migrate-imports)
 
 ------------------------------------------------------------------------
 
@@ -108,7 +110,17 @@ Example:
 
 ------------------------------------------------------------------------
 
-## 9. Future Extensibility
+## 9. Imports and Migration
+
+-   **Purpose**: Let users add prompts they already have (Obsidian, Notion, other Markdown) without manually writing frontmatter.
+-   **Location**: Files placed in `imports/` (or subfolders); `imports/README.md` documents the workflow.
+-   **Migration script**: Run via `pnpm run migrate`. Reads all `.md` in `imports/` (except `README.md`), parses frontmatter and body, maps to the content collection schema, and writes to `content/prompts/{slug}.md`.
+-   **Frontmatter mapping**: Title from frontmatter or first `#` heading or filename; slug from frontmatter or slugified title; tags from frontmatter (array or comma-separated) or optional enhancement from `#hashtags` in body; author, difficulty, visibility, dates from frontmatter or defaults.
+-   **Output**: Each migrated file has full required frontmatter and unchanged body; dates emitted as quoted strings for schema compatibility. User can then edit the new file in `content/prompts/` and delete or keep the original in `imports/`.
+
+------------------------------------------------------------------------
+
+## 10. Future Extensibility
 
 -   Parameterized prompts
 -   CLI integration

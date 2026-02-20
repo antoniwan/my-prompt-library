@@ -43,6 +43,13 @@
 -   When requirements or specifications change, or when work is completed, TODO.md must be updated accordingly.
 -   Every item in TODO.md must reference the source that asks for it (e.g. REQUIREMENTS §1.4, SPEC §6). This keeps REQUIREMENTS and SPECIFICATIONS as the single source of truth and makes the agent docs self-governing.
 
+### 1.8 Imports / Migration
+
+-   An **imports** folder exists where users can place prompt files from elsewhere (e.g. Obsidian, Notion, plain Markdown).
+-   A **migration** step (script) converts those files into the content collection format and writes them to `content/prompts/` with required frontmatter (title, slug, tags, author, difficulty, visibility, created_at, updated_at).
+-   Migration may infer or enhance values (e.g. title from first heading, tags from frontmatter or optional `#hashtags` in the body, summary from first paragraph).
+-   Migrated prompts are normal content; if contributed via PR, they remain subject to maintainer review and author attribution (see §1.6).
+
 ------------------------------------------------------------------------
 
 ## 2. Non-Functional Requirements
