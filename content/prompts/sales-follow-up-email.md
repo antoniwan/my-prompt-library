@@ -1,35 +1,41 @@
 ---
-author: Antonio Rodriguez
-created_at: "2026-02-17"
-difficulty: beginner
-models_tested:
-  - gpt-4o
-  - claude-3-opus
-quality_score: 4.5
+title: Sales Follow-Up Email
 slug: sales-follow-up-email
 summary: Draft a professional sales follow-up email after an initial meeting or call.
 tags:
   - marketing
   - email-draft
   - formal
-title: Sales Follow-Up Email
-updated_at: "2026-02-17"
-use_count: 0
+author: Antonio Rodriguez
+difficulty: beginner
 visibility: public
+created_at: "2026-02-17"
+updated_at: "2026-02-17"
+models_tested:
+  - gpt-4o
+  - claude-3-opus
+quality_score: 4.5
+use_count: 0
 ---
 
 ## Context
 
 Use when a sales rep needs to send a follow-up email after an initial discovery call or meeting. The tone should be professional, concise, and value-oriented without being pushy.
 
+---
+
 ## Length
 
 Keep the email body to 80–120 words. Subject line under 60 characters.
+
+---
 
 ## Examples
 
 - After a product demo: reference one specific feature they showed interest in.
 - After a discovery call: recap one agreed next step and attach any promised materials.
+
+---
 
 ## Prompt
 

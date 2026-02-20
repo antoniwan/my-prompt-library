@@ -1,30 +1,36 @@
 ---
-author: Antonio Rodriguez
-created_at: "2026-02-17"
-difficulty: beginner
+title: Meeting Summary
 slug: meeting-summary
 summary: Turn raw meeting notes into a structured summary with decisions and action items.
 tags:
   - productivity
   - meetings
   - summarization
-title: Meeting Summary
-updated_at: "2026-02-17"
+author: Antonio Rodriguez
+difficulty: beginner
 visibility: public
+created_at: "2026-02-17"
+updated_at: "2026-02-17"
 ---
 
 ## Context
 
 Use when you have rough notes or a transcript from a meeting and need a clean, scannable summary. Best for internal meetings where decisions and action items must be captured.
 
+---
+
 ## Length
 
 Summary should be 150–300 words. Use bullet points for decisions and action items.
+
+---
 
 ## Examples
 
 - Stand-up notes → Summary with "Decisions," "Blockers," "Action items."
 - Project kickoff → Summary with "Goals," "Owners," "Next steps," "Open questions."
+
+---
 
 ## Prompt
 

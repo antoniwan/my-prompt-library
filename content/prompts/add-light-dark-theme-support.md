@@ -16,13 +16,11 @@ updated_at: "2026-02-17"
 visibility: public
 ---
 
-You are working inside an existing production front-end codebase.
+You are working inside an existing production front-end codebase. Your objective is to implement light/dark theme capability and create a theme toggle component, while strictly adhering to the principles below.
 
-Your objective is to implement light/dark theme capability and create a theme toggle component, while strictly adhering to the following principles.
+---
 
-⸻
-
-🎯 PRIMARY OBJECTIVES
+## 🎯 Primary objectives
 
 1. Add light/dark theme capability.
 2. Persist theme preference using native browser mechanisms.
@@ -33,11 +31,11 @@ Your objective is to implement light/dark theme capability and create a theme to
 7. Prevent flash-of-incorrect-theme (FOUC) when possible.
 8. Avoid unnecessary external dependencies.
 
-⸻
+---
 
-🚨 HARD CONSTRAINTS
+## 🚨 Hard constraints
 
-You MUST:
+### You MUST
 
 - Detect and use the existing styling approach (CSS, SCSS, CSS Modules, Tailwind, styled-components, emotion, inline styles, etc.).
 - Extend existing infrastructure instead of replacing it.
@@ -47,18 +45,18 @@ You MUST:
 - Avoid introducing a new design system.
 - Avoid adding heavy dependencies.
 
-You MUST NOT:
+### You MUST NOT
 
 - Rewrite the styling paradigm.
 - Introduce a completely new theming architecture.
 - Break existing layouts or visual design.
 - Replace static colors globally unless safe and minimal.
 
-⸻
+---
 
-🧠 ARCHITECTURAL STRATEGY
+## 🧠 Architectural strategy
 
-1️⃣ Detect Existing Styling Strategy
+### 1. Detect existing styling strategy
 
 Before implementation:
 
@@ -70,22 +68,15 @@ Before implementation:
 
 Adapt to what already exists.
 
-⸻
+### 2. Theming implementation strategy
 
-2️⃣ Theming Implementation Strategy
-
-Use the most native and minimal strategy possible based on the existing system.
-
-Prefer this order of implementation:
+Use the most native and minimal strategy possible based on the existing system. Prefer this order:
 
 **A. If CSS variables are already used**
 
 - Extend them to support dark variants.
 - Define light and dark values at root scope.
-- Toggle via:
-  - `data-theme="dark"` OR
-  - `class="dark"`
-- whichever aligns with existing conventions.
+- Toggle via `data-theme="dark"` OR `class="dark"`—whichever aligns with existing conventions.
 
 **B. If utility framework (e.g., Tailwind) is used**
 
@@ -99,128 +90,110 @@ Prefer this order of implementation:
 - Do NOT refactor entire codebase.
 - Only abstract what is required for light/dark switching.
 
-⸻
+---
 
-💾 THEME PERSISTENCE REQUIREMENTS
+## 💾 Theme persistence requirements
 
-Use:
+**Use:**
 
-- localStorage for persistence.
+- `localStorage` for persistence.
 - Native browser APIs only.
 - No heavy theme libraries unless the project already uses one.
 
-Behavior:
+**Behavior:**
 
-1. On first load:
-   - Detect saved preference in localStorage.
-   - If none exists:
-     - Fallback to `prefers-color-scheme`.
+1. On first load: detect saved preference in `localStorage`; if none exists, fall back to `prefers-color-scheme`.
 2. Persist user selection.
 3. Apply theme immediately on load.
 
-⸻
+---
 
-⚡ FOUC PREVENTION
+## ⚡ FOUC prevention
 
 Implement an early inline script (before hydration if applicable) that:
 
-- Reads localStorage.
+- Reads `localStorage`.
 - Applies the correct theme class or attribute to the root element.
 - Runs before the UI renders.
 
-This must:
+This must be minimal, avoid blocking performance, and avoid hydration mismatch errors.
 
-- Be minimal.
-- Avoid blocking performance.
-- Avoid hydration mismatch errors.
+---
 
-⸻
-
-🧩 THEME TOGGLE COMPONENT
+## 🧩 Theme toggle component
 
 Create a toggle component using the existing component paradigm.
 
-Requirements:
+**Requirements:**
 
 - Follow the existing component structure (functional, class-based, etc.).
 - Use existing button or UI primitives if available.
 - Do not introduce a new UI abstraction.
-- Accessible:
-  - aria-label
-  - Keyboard accessible
-  - Proper semantic element (button)
+- **Accessible:** `aria-label`, keyboard accessible, proper semantic element (`button`).
 - Visually minimal and consistent with current UI.
 
-Behavior:
+**Behavior:**
 
 - Toggles between light and dark.
-- Updates localStorage.
+- Updates `localStorage`.
 - Updates root theme attribute/class.
 - Triggers UI update without page reload.
 
-⸻
+---
 
-🏗 STATE MANAGEMENT
+## 🏗 State management
 
 If global state is required:
 
 - Use existing context/provider if present.
-- If none exists:
-  - Create minimal theme context only if necessary.
-  - Avoid Redux/Zustand/etc. unless already present.
+- If none exists: create minimal theme context only if necessary; avoid Redux/Zustand/etc. unless already present.
 
-Prefer:
+Prefer **root DOM attribute + reactive re-render** over complex global state systems.
 
-- Root DOM attribute + reactive re-render
+---
 
-over
+## 🔍 Edge cases to handle
 
-- Complex global state systems.
-
-⸻
-
-🔍 EDGE CASES TO HANDLE
-
-- SSR environments (avoid accessing window directly without guards).
+- SSR environments (avoid accessing `window` directly without guards).
 - Hydration mismatches.
 - Multiple mounts.
-- Cross-tab sync (optional but ideal using storage event).
+- Cross-tab sync (optional but ideal using `storage` event).
 - Embedded iframes (if relevant).
 
-⸻
+---
 
-♿ ACCESSIBILITY REQUIREMENTS
+## ♿ Accessibility requirements
 
 - Ensure sufficient contrast in both modes.
 - Do not rely on color alone for meaning.
 - Maintain focus styles.
 - Preserve readability.
 
-⸻
+---
 
-🧪 TESTING REQUIREMENTS
+## 🧪 Testing requirements
 
-After implementation:
+After implementation, verify:
 
-- Verify no layout shifts occur.
-- Verify no hydration warnings.
-- Verify persistence across reloads.
-- Verify system preference fallback works.
-- Verify toggle does not cause full page reload.
-- Verify no console errors.
+- No layout shifts occur.
+- No hydration warnings.
+- Persistence across reloads.
+- System preference fallback works.
+- Toggle does not cause full page reload.
+- No console errors.
 
-⸻
+---
 
-🗂 FILE ORGANIZATION RULES
+## 🗂 File organization rules
 
 - Place theme utilities near existing global utilities.
 - Place toggle component near other UI controls.
 - Do not create deep new folder hierarchies.
 - Follow existing naming conventions.
 
-⸻
+---
 
-🧹 CLEAN CODE REQUIREMENTS
+## 🧹 Clean code requirements
 
 - Keep implementation small.
 - No unused code.
@@ -228,9 +201,9 @@ After implementation:
 - Document only where helpful.
 - Follow existing lint rules.
 
-⸻
+---
 
-🏁 DEFINITION OF DONE
+## 🏁 Definition of done
 
 Implementation is complete when:
 
@@ -241,9 +214,9 @@ Implementation is complete when:
 - No regressions are introduced.
 - Solution feels native to the codebase.
 
-⸻
+---
 
-🛑 BEFORE IMPLEMENTING
+## 🛑 Before implementing
 
 You MUST:
 
@@ -256,17 +229,10 @@ You MUST:
 
 Do not implement blindly.
 
-⸻
+---
 
-If architectural conflicts arise:
+## Resolving conflicts and ambiguity
 
-- Choose the simplest solution.
-- Favor minimalism.
-- Favor native browser capabilities.
-- Avoid adding dependencies unless absolutely required.
+**If architectural conflicts arise:** choose the simplest solution; favor minimalism and native browser capabilities; avoid adding dependencies unless absolutely required.
 
-⸻
-
-If anything is ambiguous:
-
-Ask before proceeding.
+**If anything is ambiguous:** ask before proceeding.

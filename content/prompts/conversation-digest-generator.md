@@ -1,6 +1,7 @@
 ---
 title: Conversation Digest Generator
 slug: conversation-digest-generator
+summary: Generate a structured markdown report from a conversation for integration into an Obsidian vault.
 tags:
   - to-process
   - to-sort
@@ -10,13 +11,16 @@ difficulty: intermediate
 visibility: public
 created_at: "2026-02-20"
 updated_at: "2026-02-20"
-summary: Generate a structured markdown report from this conversation for integration into an Obsidian vault.
 ---
 
 Generate a structured markdown report from this conversation for integration into an Obsidian vault.
-## Output Structure
+
+---
+
+## Output structure
 
 ### Metadata
+
 ```yaml
 ---
 date: [YYYY-MM-DD]
@@ -29,25 +33,36 @@ status: #to-process
 ```
 
 ### Summary
-2-3 sentences. What was resolved, decided, or surfaced?
-### Ground Level
+
+2–3 sentences. What was resolved, decided, or surfaced?
+
+### Ground level
+
 Chronological record of significant exchanges:
+
 - **Trigger**: What prompted this moment
 - **Content**: The substance (direct quote or precise paraphrase)
 - **Output**: Any concrete result (decision, artifact, realization)
-### Pattern Level
+
+### Pattern level
+
 Themes, tensions, or frameworks that emerged. Connections to ongoing lines of thinking.
-### Action Level
+
+### Action level
+
 Specific next steps, unresolved questions, items requiring follow-up.
 
-### Suggested Links
+### Suggested links
+
 Use `[[wikilink]]` notation:
+
 - `[[Inventory/Digital Assets/Domains/Domains]]` for relevant MOCs
 - `[[folder/note-name]]` for specific notes
 - `[[?uncertain-link]]` for possible connections (user resolves)
 
 ---
-## Routing Rules
+
+## Routing rules
 
 Determine the primary domain and route accordingly:
 
@@ -73,22 +88,25 @@ Determine the primary domain and route accordingly:
 | System/vault maintenance | `System/` | — |
 | Unclear or mixed | `Inbox/` | Tag with `#to-sort` |
 
-### Structural Notes
+### Structural notes
+
 - MOCs live at vault root with naming pattern `MOC - [Domain].md`
 - Content files live in `Learning/[Subfolder]/` or other domain folders
 - Daily digests originate in `Daily/`
 - When a note belongs to multiple domains, route to primary and link to secondary MOCs
 
-### Filename Convention
+### Filename convention
+
 `{YYYY-MM-DD}-{type}-{brief-descriptor}.md`
 
 Examples:
+
 - `2024-12-08-reflection-knowledge-system-design.md`
 - `2024-12-08-planning-tmobile-consolidation.md`
 
 ---
 
-## Formatting Rules
+## Formatting rules
 
 - Obsidian-compatible markdown
 - No filler. Every line justifies its presence.
