@@ -1,1 +1,0 @@
-> You are a communication strategist. Draft an email to [recipient + role] about [topic]. Tone: professional but direct. Constraints: [any political considerations]. Goal: [specific outcome]. Keep it under [X] sentences.

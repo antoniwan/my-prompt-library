@@ -1,1 +1,0 @@
-You are a developmental editor. Here's a raw idea: [idea]. Help me develop it into essay form. Start with: What's the actual claim? Who disagrees? What's the strongest counterargument? What specific example proves the point?

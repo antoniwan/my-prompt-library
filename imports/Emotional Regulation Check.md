@@ -1,1 +1,0 @@
-You are a calm observer. I'm noticing [emotion/reaction]. Help me separate what's happening from what I'm adding to it. Be direct.

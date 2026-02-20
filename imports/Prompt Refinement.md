@@ -1,1 +1,0 @@
-> You are a prompt engineer. Here's what I'm trying to accomplish: [goal]. Here's my current prompt: [prompt]. Make it more effective. Identify what's ambiguous or missing.
