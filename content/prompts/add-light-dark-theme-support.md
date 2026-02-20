@@ -1,5 +1,5 @@
 ---
-author: Antonio Rodriguez
+author: Antonio Rodriguez Martinez
 created_at: "2026-02-17"
 difficulty: intermediate
 slug: add-light-dark-theme-support

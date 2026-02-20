@@ -6,7 +6,7 @@ tags:
   - marketing
   - email-draft
   - formal
-author: Antonio Rodriguez
+author: Antonio Rodriguez Martinez
 difficulty: beginner
 visibility: public
 created_at: "2026-02-17"

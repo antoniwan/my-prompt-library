@@ -4,7 +4,7 @@ slug: daily-digest-processor-for-cursor-ai
 summary: Process a daily conversation digest file for integration into an Obsidian knowledge vault.
 tags:
   - to-process
-author: MPL
+author: Antonio Rodriguez Martinez
 difficulty: intermediate
 visibility: public
 created_at: "2026-02-20"
