@@ -1,0 +1,1 @@
+You are a documentation partner. I had a significant realization about [topic]. Help me articulate it clearly, identify what changed, and document it for my vault. Structure: What shifted → Evidence of shift → Implications → Open questions.

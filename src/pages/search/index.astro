@@ -12,6 +12,18 @@ const searchIndex = prompts.map((entry) => ({
 	author: entry.data.author,
 	bodyExcerpt: typeof entry.body === "string" ? entry.body.slice(0, 800) : "",
 }));
+
+const tagSet = new Set<string>();
+const authorSet = new Set<string>();
+for (const entry of prompts) {
+	entry.data.tags.forEach((t: string) => tagSet.add(t));
+	authorSet.add(entry.data.author);
+}
+const filterOptions = {
+	tags: Array.from(tagSet).sort((a, b) => a.localeCompare(b)),
+	difficulties: ["beginner", "intermediate", "advanced"] as const,
+	authors: Array.from(authorSet).sort((a, b) => a.localeCompare(b)),
+};
 ---
 
 <Layout
@@ -24,15 +36,40 @@ const searchIndex = prompts.map((entry) => ({
 	</header>
 
 	<form class="search-form" role="search" aria-label="Search prompts">
-		<label for="search-input" class="visually-hidden">Search prompts</label>
-		<input
-			id="search-input"
-			type="search"
-			class="search-input"
-			placeholder="Type to search…"
-			autocomplete="off"
-			aria-describedby="search-results-label"
-		/>
+		<div class="search-row">
+			<label for="search-input" class="visually-hidden">Search prompts</label>
+			<input
+				id="search-input"
+				type="search"
+				class="search-input"
+				placeholder="Type to search…"
+				autocomplete="off"
+				aria-describedby="search-results-label"
+			/>
+		</div>
+		<div class="search-filters" aria-label="Filter results">
+			<label for="filter-difficulty">Difficulty</label>
+			<select id="filter-difficulty" class="filter-select" aria-label="Filter by difficulty">
+				<option value="">All</option>
+				{filterOptions.difficulties.map((d) => (
+					<option value={d}>{d}</option>
+				))}
+			</select>
+			<label for="filter-author">Author</label>
+			<select id="filter-author" class="filter-select" aria-label="Filter by author">
+				<option value="">All</option>
+				{filterOptions.authors.map((a) => (
+					<option value={a}>{a}</option>
+				))}
+			</select>
+			<label for="filter-tag">Tag</label>
+			<select id="filter-tag" class="filter-select" aria-label="Filter by tag">
+				<option value="">All</option>
+				{filterOptions.tags.map((t) => (
+					<option value={t}>{t}</option>
+				))}
+			</select>
+		</div>
 		<div id="search-results-label" class="visually-hidden" aria-live="polite">
 			Search results update as you type.
 		</div>
@@ -51,6 +88,9 @@ const searchIndex = prompts.map((entry) => ({
 
 	const form = document.querySelector(".search-form");
 	const input = document.getElementById("search-input");
+	const filterDifficulty = document.getElementById("filter-difficulty");
+	const filterAuthor = document.getElementById("filter-author");
+	const filterTag = document.getElementById("filter-tag");
 	const initialEl = document.getElementById("search-initial");
 	const listEl = document.getElementById("search-list");
 	const emptyEl = document.getElementById("search-empty");
@@ -60,8 +100,8 @@ const searchIndex = prompts.map((entry) => ({
 
 	form?.addEventListener("submit", (e) => e.preventDefault());
 
-	const index = Array.isArray(searchIndex) ? searchIndex : [];
-	const fuse = new Fuse(index, {
+	const fullIndex = Array.isArray(searchIndex) ? searchIndex : [];
+	const fuse = new Fuse(fullIndex, {
 		keys: [
 			{ name: "title", weight: 0.4 },
 			{ name: "summary", weight: 0.3 },
@@ -73,6 +113,48 @@ const searchIndex = prompts.map((entry) => ({
 		threshold: 0.3,
 		includeScore: true,
 	});
+
+	function getFilteredIndex() {
+		const difficulty = filterDifficulty?.value ?? "";
+		const author = filterAuthor?.value ?? "";
+		const tag = filterTag?.value ?? "";
+		if (!difficulty && !author && !tag) return fullIndex;
+		return fullIndex.filter((item) => {
+			if (difficulty && item.difficulty !== difficulty) return false;
+			if (author && item.author !== author) return false;
+			if (tag && !item.tags.includes(tag)) return false;
+			return true;
+		});
+	}
+
+	function runSearch() {
+		const q = input.value.trim();
+		const filtered = getFilteredIndex();
+		const hasFilters = !!(filterDifficulty?.value || filterAuthor?.value || filterTag?.value);
+		if (q.length === 0) {
+			if (filtered.length === 0) {
+				listEl.hidden = true;
+				listEl.innerHTML = "";
+				initialEl.hidden = true;
+				emptyEl.hidden = false;
+				return;
+			}
+			if (!hasFilters) {
+				listEl.hidden = true;
+				listEl.innerHTML = "";
+				initialEl.hidden = false;
+				emptyEl.hidden = true;
+				return;
+			}
+			// No query but filters active: show filtered list (up to 25)
+			const slice = filtered.slice(0, 25).map((item) => ({ item, score: 0 }));
+			renderResults(slice);
+			return;
+		}
+		const searchFuse = new Fuse(filtered, fuse.config);
+		const results = searchFuse.search(q).slice(0, 25);
+		renderResults(results);
+	}
 
 	function renderResults(results) {
 		listEl.innerHTML = "";
@@ -112,21 +194,13 @@ const searchIndex = prompts.map((entry) => ({
 		return div.innerHTML;
 	}
 
-	input.addEventListener("input", () => {
-		const q = input.value.trim();
-		if (q.length === 0) {
-			listEl.hidden = true;
-			listEl.innerHTML = "";
-			initialEl.hidden = false;
-			emptyEl.hidden = true;
-			return;
-		}
-		const results = fuse.search(q).slice(0, 25);
-		renderResults(results);
-	});
+	input.addEventListener("input", runSearch);
+	filterDifficulty?.addEventListener("change", runSearch);
+	filterAuthor?.addEventListener("change", runSearch);
+	filterTag?.addEventListener("change", runSearch);
 
 	input.addEventListener("focus", () => {
-		if (input.value.trim().length > 0 && listEl.children.length > 0) {
+		if (listEl.children.length > 0) {
 			listEl.hidden = false;
 		}
 	});
@@ -150,6 +224,37 @@ const searchIndex = prompts.map((entry) => ({
 
 	.search-form {
 		margin-bottom: 1.5rem;
+	}
+
+	.search-row {
+		margin-bottom: 0.75rem;
+	}
+
+	.search-filters {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem 1rem;
+	}
+
+	.search-filters label {
+		font-size: 0.875rem;
+		color: var(--color-text-muted);
+	}
+
+	.filter-select {
+		padding: 0.375rem 0.5rem;
+		font-size: 0.875rem;
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: 0.25rem;
+		color: var(--color-text);
+	}
+
+	.filter-select:focus {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 1px;
+		border-color: var(--color-accent);
 	}
 
 	.search-input {

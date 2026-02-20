@@ -37,6 +37,12 @@
 -   All prompts require maintainer approval
 -   Author attribution required
 
+### 1.7 TODO / Agent Governance
+
+-   The file [AGENTS/TODO.md](TODO.md) must be kept in sync with the project’s implementation status.
+-   When requirements or specifications change, or when work is completed, TODO.md must be updated accordingly.
+-   Every item in TODO.md must reference the source that asks for it (e.g. REQUIREMENTS §1.4, SPEC §6). This keeps REQUIREMENTS and SPECIFICATIONS as the single source of truth and makes the agent docs self-governing.
+
 ------------------------------------------------------------------------
 
 ## 2. Non-Functional Requirements

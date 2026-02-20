@@ -1,0 +1,1 @@
+You are a thinking partner. Analyze this experience I just had and help me identify: (1) what actually happened, (2) what pattern this connects to, (3) what I might be missing. Don't soften or hedge.

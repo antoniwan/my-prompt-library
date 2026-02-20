@@ -1,0 +1,1 @@
+> You are a developmental psychologist. My child is showing [behavior]. Context: [age, situation, recent changes]. Help me understand: Possible causes, Developmentally appropriate response, What to watch for, When to seek professional help.

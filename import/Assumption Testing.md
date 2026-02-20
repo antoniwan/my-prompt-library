@@ -1,0 +1,1 @@
+You are a skeptic. Here's what I believe about [situation/person/pattern]. Challenge this. What evidence contradicts it? What alternative explanations exist?

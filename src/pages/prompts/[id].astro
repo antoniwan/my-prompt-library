@@ -17,9 +17,28 @@ const title = `${entry.data.title} — My Prompt Library`;
 const description =
 	entry.data.summary ||
 	(entry.data.title && `${entry.data.title}. A curated prompt from My Prompt Library.`);
+const canonicalPath = `/prompts/${entry.id}/`;
+const structuredData = {
+	"@context": "https://schema.org",
+	"@type": "Article",
+	name: entry.data.title,
+	description: description,
+	author: {
+		"@type": "Person",
+		name: entry.data.author,
+	},
+	dateModified: entry.data.updated_at,
+	...(Astro.site && { url: new URL(canonicalPath, Astro.site).href }),
+};
 ---
 
-<Layout title={title} description={description}>
+<Layout
+	title={title}
+	description={description}
+	canonicalPath={canonicalPath}
+	structuredData={structuredData}
+	ogType="article"
+>
 	<article class="prompt-detail">
 		<header class="prompt-header">
 			<h1>{entry.data.title}</h1>
@@ -113,19 +132,32 @@ const description =
 		const statusEl = document.getElementById("copy-status");
 		if (!target || !statusEl) return;
 
+		const labelCopy = "Copy to clipboard";
+		const labelCopied = "Copied!";
+		const labelFailed = "Copy failed";
+		const resetDelay = 2000;
+
 		btn.addEventListener("click", async () => {
 			const text = target.textContent?.trim() || "";
 			try {
 				await navigator.clipboard.writeText(text);
-				statusEl.textContent = "Copied!";
+				btn.textContent = labelCopied;
+				btn.classList.add("copy-button--copied");
+				btn.classList.remove("copy-button--failed");
+				statusEl.textContent = labelCopied;
 				statusEl.removeAttribute("aria-hidden");
 			} catch {
-				statusEl.textContent = "Copy failed";
+				btn.textContent = labelFailed;
+				btn.classList.add("copy-button--failed");
+				btn.classList.remove("copy-button--copied");
+				statusEl.textContent = labelFailed;
 				statusEl.removeAttribute("aria-hidden");
 			}
 			setTimeout(() => {
+				btn.textContent = labelCopy;
+				btn.classList.remove("copy-button--copied", "copy-button--failed");
 				statusEl.textContent = "";
-			}, 2000);
+			}, resetDelay);
 		});
 	});
 
@@ -331,6 +363,24 @@ const description =
 		background: var(--color-accent-hover);
 		outline: 2px solid var(--color-accent-hover);
 		outline-offset: 2px;
+	}
+
+	.copy-cta .copy-button--copied {
+		background: var(--color-copy-success, #059669);
+	}
+
+	.copy-cta .copy-button--copied:hover,
+	.copy-cta .copy-button--copied:focus-visible {
+		background: var(--color-copy-success-hover, #047857);
+	}
+
+	.copy-cta .copy-button--failed {
+		background: var(--color-copy-failed, #dc2626);
+	}
+
+	.copy-cta .copy-button--failed:hover,
+	.copy-cta .copy-button--failed:focus-visible {
+		background: var(--color-copy-failed-hover, #b91c1c);
 	}
 
 	.copy-cta .copy-status {

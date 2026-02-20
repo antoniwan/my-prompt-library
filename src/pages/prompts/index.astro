@@ -3,15 +3,25 @@ import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 
 const tagFilter = Astro.url.searchParams.get("tag");
+const difficultyFilter = Astro.url.searchParams.get("difficulty");
+const authorFilter = Astro.url.searchParams.get("author");
 let prompts = await getCollection("prompts", ({ data }) => data.visibility === "public");
 
 if (tagFilter) {
 	prompts = prompts.filter((p) => p.data.tags.includes(tagFilter));
 }
+if (difficultyFilter && ["beginner", "intermediate", "advanced"].includes(difficultyFilter)) {
+	prompts = prompts.filter((p) => p.data.difficulty === difficultyFilter);
+}
+if (authorFilter) {
+	prompts = prompts.filter((p) => p.data.author === authorFilter);
+}
 
 prompts = prompts.sort(
 	(a, b) => new Date(b.data.updated_at).getTime() - new Date(a.data.updated_at).getTime(),
 );
+
+const hasFilters = !!(tagFilter || difficultyFilter || authorFilter);
 ---
 
 <Layout
@@ -20,9 +30,14 @@ prompts = prompts.sort(
 >
 	<header class="page-header">
 		<h1>Prompts</h1>
-		{tagFilter && (
+		{hasFilters && (
 			<p class="filter-note">
-				Filtering by tag: <strong>{tagFilter}</strong>. <a href="/prompts/">Show all</a>
+				Filtering by:{" "}
+				{[tagFilter && `tag ${tagFilter}`, difficultyFilter && `difficulty ${difficultyFilter}`, authorFilter && `author ${authorFilter}`]
+					.filter(Boolean)
+					.join(" · ")}
+				{" — "}
+				<a href="/prompts/">Show all</a>
 			</p>
 		)}
 	</header>
@@ -43,9 +58,13 @@ prompts = prompts.sort(
 							))}
 						</dd>
 						<dt class="visually-hidden">Difficulty</dt>
-						<dd>{entry.data.difficulty}</dd>
+						<dd>
+							<a href={`/prompts/?difficulty=${encodeURIComponent(entry.data.difficulty)}`} class="meta-link">{entry.data.difficulty}</a>
+						</dd>
 						<dt class="visually-hidden">Author</dt>
-						<dd>{entry.data.author}</dd>
+						<dd>
+							<a href={`/prompts/?author=${encodeURIComponent(entry.data.author)}`} class="meta-link">{entry.data.author}</a>
+						</dd>
 					</dl>
 				</article>
 			</li>
@@ -53,7 +72,15 @@ prompts = prompts.sort(
 	</ul>
 
 	{prompts.length === 0 && (
-		<p>No prompts found.{tagFilter && " Try removing the tag filter."}</p>
+		<p>
+			No prompts found.
+			{hasFilters && (
+				<>
+					{" "}
+					<a href="/prompts/">Show all</a> to clear filters.
+				</>
+			)}
+		</p>
 	)}
 </Layout>
 
@@ -73,8 +100,16 @@ prompts = prompts.sort(
 		margin: 0;
 	}
 
-	.filter-note a {
+	.filter-note a,
+	.meta-link {
 		color: var(--color-accent);
+		text-decoration: none;
+	}
+
+	.meta-link:hover,
+	.meta-link:focus-visible {
+		text-decoration: underline;
+		outline: none;
 	}
 
 	.prompt-list {

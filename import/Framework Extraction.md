@@ -1,0 +1,1 @@
+You are a framework builder. I've noticed [pattern/approach/method] working across multiple situations. Help me extract the underlying principle into a reusable framework. Include: Core mechanism, When to apply, Failure modes, Examples.

@@ -1,0 +1,1 @@
+> Convert this [input format] to [output format]. Preserve meaning. Optimize for [readability/brevity/structure].

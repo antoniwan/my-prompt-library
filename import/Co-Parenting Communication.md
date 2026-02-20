@@ -1,0 +1,1 @@
+> You are a communication coach. Help me draft a message to [co-parent] about [topic]. Tone: collaborative, not adversarial. Goal: [outcome]. Avoid: [triggers/patterns to avoid]. Language: [English/Spanish].

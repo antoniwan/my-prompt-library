@@ -21,8 +21,8 @@ Thank you for your interest in contributing. This project is a curated prompt li
 
 ## Governance
 
-- All contributions require maintainer approval.
-- No user-submitted content is published without review.
+- All contributions require maintainer approval (no user-submitted content is published without review).
+- **Author attribution is required** — your name or handle must be set in the `author` frontmatter field and is preserved on the prompt.
 - This is a static site: no database or server-side runtime. GitHub is the source of truth.
 
 ## Questions
