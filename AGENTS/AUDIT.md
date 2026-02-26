@@ -290,13 +290,14 @@ From `package.json`:
    - Build and serve a single `search-index.json`.
    - Update `SearchBar.astro` to fetch and cache this index on demand. _Added `src/pages/search-index.json.ts` (prerendered at build); header search fetches `/search-index.json` on first query and caches it; lite index (description capped at 200 chars)._
 
-5. **Add linting + formatting** ✓ *Done*
+5. **Add linting + formatting** ✓ _Done_
    - ESLint (with Astro + TS) and Prettier or Biome.
-   - Establish a standard coding style for all contributors. *Added ESLint 9 (flat config) with eslint-plugin-astro, typescript-eslint, and eslint-config-prettier; Prettier with prettier-plugin-astro; scripts: `lint`, `format`, `format:check`; .vscode format-on-save and ESLint fix on save.*
+   - Establish a standard coding style for all contributors. _Added ESLint 9 (flat config) with eslint-plugin-astro, typescript-eslint, and eslint-config-prettier; Prettier with prettier-plugin-astro; scripts: `lint`, `format`, `format:check`; .vscode format-on-save and ESLint fix on save._
 
-6. **Introduce tests and CI**
+6. **Introduce tests and CI** ✓ _Done_
    - Start with unit tests for the content schema and migration script.
    - Add a GitHub Actions workflow for build, lint, and tests on PRs.
+     _Vitest added with Astro getViteConfig; prompt schema extracted to `src/schema/prompt.ts` and unit-tested; `src/data/prompts.ts` helpers (getUniqueTags, getUniqueAuthors, getTagCounts, DIFFICULTIES) covered by tests. GitHub Actions workflow `.github/workflows/ci.yml` runs on push/PR to main: install, lint, format:check, test, build. Migration script tests deferred to roadmap item 7._
 
 7. **Type and harden the migration script**
    - Convert to TypeScript with explicit types.
