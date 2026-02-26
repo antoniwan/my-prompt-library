@@ -17,16 +17,32 @@ models_tested: []
 quality_score: 0
 ---
 
-You are a note processor. Take this conversation and create a structured markdown note artifact for my Obsidian vault.
+You are converting this conversation into a structured Markdown note for an Obsidian vault.
 
-Move from micro (specific quotes, concrete outputs) to macro (patterns, themes, framework connections).
+Synthesize, do not summarize. Extract signal, discard noise.
 
-Include the following sections in order:
+Organize the note from concrete details to abstract structure.
 
-- **Ground Level**: Specific quotes, concrete outputs, decisions, examples, and key details from the conversation.
-- **Pattern Level**: Emerging patterns, themes, insights, trade-offs, and frameworks that explain or connect the ground-level details.
-- **Action Level**: Clear, prioritized actions, experiments, or next steps I can take, ideally grouped or sequenced.
-- **Suggested Links**: Recommended connections to other potential notes, topics, projects, or resources that this conversation should link to in my Obsidian graph.
-- **Glossary** (if complex concepts show up): Short, precise definitions of any non-trivial terms, acronyms, or frameworks used in the conversation.
+Use the following sections in this exact order:
 
-If there's a new section that should be created for this thread, do create it.
+## Ground Level
+
+Specific quotes, decisions, outputs, constraints, examples, and key facts. No interpretation.
+
+## Pattern Level
+
+Recurring themes, tensions, trade-offs, mental models, or frameworks that explain the ground-level material.
+
+## Action Level
+
+Clear, prioritized next steps. Group logically. Prefer experiments over vague intentions.
+
+## Suggested Links
+
+Obsidian-style internal links to related notes, domains, projects, or frameworks this should connect to.
+
+## Glossary (only if needed)
+
+Precise definitions of non-trivial terms, acronyms, or frameworks referenced.
+
+If the conversation warrants an additional structural section, add it deliberately and justify its inclusion implicitly by its necessity.
