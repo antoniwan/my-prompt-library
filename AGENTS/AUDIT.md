@@ -286,9 +286,9 @@ From `package.json`:
    - Implement `getPublicPrompts()` and helper functions in `src/data/prompts.ts`.
    - Refactor pages and search components to rely on it. *Added `src/data/prompts.ts` with `getPublicPrompts()`, `getUniqueTags()`, `getUniqueAuthors()`, `getTagCounts()`, and `DIFFICULTIES`; all pages and `SearchBar.astro` now use it.*
 
-4. **Externalize header search index**
+4. **Externalize header search index** ✓ *Done*
    - Build and serve a single `search-index.json`.
-   - Update `SearchBar.astro` to fetch and cache this index on demand.
+   - Update `SearchBar.astro` to fetch and cache this index on demand. *Added `src/pages/search-index.json.ts` (prerendered at build); header search fetches `/search-index.json` on first query and caches it; lite index (description capped at 200 chars).*
 
 5. **Add linting + formatting**
    - ESLint (with Astro + TS) and Prettier or Biome.

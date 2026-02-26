@@ -1,6 +1,4 @@
 ---
-import { getPublicPrompts, getTagCounts } from "../data/prompts";
-
 interface Props {
 	class?: string;
 	placeholder?: string;
@@ -10,62 +8,6 @@ const {
 	class: className = "",
 	placeholder = "Search prompts, tags, pages…",
 } = Astro.props as Props;
-
-const prompts = await getPublicPrompts();
-
-const promptSearchData = prompts.map((entry) => ({
-	type: "prompt" as const,
-	id: entry.id,
-	title: entry.data.title,
-	description: entry.data.summary || "",
-	url: `/prompts/${entry.id}/`,
-	tags: entry.data.tags,
-	difficulty: entry.data.difficulty,
-	author: entry.data.author,
-}));
-
-const tagCountsList = getTagCounts(prompts);
-const tagSearchData = tagCountsList.map(({ tag, count }) => ({
-	type: "tag" as const,
-	id: tag,
-	title: tag,
-	description: `${count} prompt${count === 1 ? "" : "s"} tagged "${tag}"`,
-	url: `/tags/${encodeURIComponent(tag)}/`,
-	count,
-}));
-
-const pageSearchData = [
-	{
-		type: "page" as const,
-		id: "home",
-		title: "Home",
-		description: "Overview of My Prompt Library",
-		url: "/",
-	},
-	{
-		type: "page" as const,
-		id: "prompts",
-		title: "Prompts",
-		description: "Browse all prompts",
-		url: "/prompts/",
-	},
-	{
-		type: "page" as const,
-		id: "tags",
-		title: "Tags",
-		description: "Browse all tags",
-		url: "/tags/",
-	},
-	{
-		type: "page" as const,
-		id: "search",
-		title: "Search",
-		description: "Full-page search interface",
-		url: "/search/",
-	},
-];
-
-const searchData = [...promptSearchData, ...tagSearchData, ...pageSearchData];
 
 const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
 ---
@@ -110,16 +52,18 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
 			<span>Searching…</span>
 		</div>
 		<div id={`${searchId}-no-results`} class="mpl-search-state mpl-search-empty hidden">
-			<p class="mpl-search-empty-title">No results found</p>
-			<p class="mpl-search-empty-hint">Try another keyword, tag, or page name.</p>
+			<p class="mpl-search-empty-title" data-default-title>No results found</p>
+			<p class="mpl-search-empty-hint" data-default-hint>Try another keyword, tag, or page name.</p>
 		</div>
 		<div id={`${searchId}-results-list`} class="mpl-search-results-list"></div>
 	</div>
 </div>
 
-<script define:vars={{ searchData }}>
+<script>
+	const SEARCH_INDEX_URL = "/search-index.json";
+
 	class SearchBar {
-		constructor(root, data) {
+		constructor(root) {
 			this.root = root;
 			this.input = root.querySelector(".mpl-search-input");
 			this.results = root.querySelector(".mpl-search-dropdown");
@@ -127,11 +71,27 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
 			this.loading = root.querySelector(".mpl-search-loading");
 			this.noResults = root.querySelector(".mpl-search-empty");
 			this.clearBtn = root.querySelector(".mpl-search-clear");
-			this.data = Array.isArray(data) ? data : [];
+			this.data = null;
+			this.dataPromise = null;
 			this.debounceTimer = null;
 			this.isSearching = false;
 
 			this.init();
+		}
+
+		async fetchIndex() {
+			if (this.data) return this.data;
+			if (this.dataPromise) return this.dataPromise;
+			this.dataPromise = fetch(SEARCH_INDEX_URL)
+				.then((res) => {
+					if (!res.ok) throw new Error("Search index failed to load");
+					return res.json();
+				})
+				.then((arr) => {
+					this.data = Array.isArray(arr) ? arr : [];
+					return this.data;
+				});
+			return this.dataPromise;
 		}
 
 		init() {
@@ -182,31 +142,35 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
 
 			this.debounceTimer = setTimeout(() => {
 				if (query.length >= 2) {
-					this.performSearch(query);
+					void this.performSearch(query);
 				} else {
 					this.hideResults();
 				}
 			}, 200);
 		}
 
-		performSearch(query) {
+		async performSearch(query) {
 			if (this.isSearching) return;
 			this.isSearching = true;
 
 			this.showLoading();
 
 			try {
+				await this.fetchIndex();
 				const results = this.search(query);
 				this.displayResults(results);
 			} catch {
-				this.showNoResults();
+				this.showNoResults({
+					title: "Search failed to load",
+					hint: "Check your connection and try again.",
+				});
 			} finally {
 				this.isSearching = false;
 			}
 		}
 
 		search(query) {
-			const searchData = this.data;
+			const searchData = this.data ?? [];
 			if (!Array.isArray(searchData) || searchData.length === 0) return [];
 
 			const normalized = query.toLowerCase().trim();
@@ -397,8 +361,14 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
 			if (this.loading) this.loading.classList.add("hidden");
 		}
 
-		showNoResults() {
-			if (this.noResults) this.noResults.classList.remove("hidden");
+		showNoResults(options = {}) {
+			if (this.noResults) {
+				const title = this.noResults.querySelector("[data-default-title]");
+				const hint = this.noResults.querySelector("[data-default-hint]");
+				if (title) title.textContent = options.title ?? "No results found";
+				if (hint) hint.textContent = options.hint ?? "Try another keyword, tag, or page name.";
+				this.noResults.classList.remove("hidden");
+			}
 			if (this.loading) this.loading.classList.add("hidden");
 			if (this.resultsList) this.resultsList.replaceChildren();
 			this.showResults();
@@ -459,10 +429,10 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
 		}
 	}
 
-	if (typeof window !== "undefined" && Array.isArray(searchData)) {
+		if (typeof window !== "undefined") {
 		const init = () => {
 			document.querySelectorAll("[data-search-root]").forEach((root) => {
-				new SearchBar(root, searchData);
+				new SearchBar(root);
 			});
 		};
 
