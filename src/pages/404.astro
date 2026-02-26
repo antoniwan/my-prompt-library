@@ -1,0 +1,32 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
+---
+
+<Layout
+  title="Page not found — My Prompt Library"
+  description="The page you’re looking for doesn’t exist. Browse curated prompts or return home."
+>
+  <PageHeader title="Page not found" description="The page you’re looking for doesn’t exist." />
+
+  <p class="mb-6 text-sm text-[var(--color-muted)]">
+    The URL may be incorrect, or this page may have been moved. You can return to the homepage or
+    jump straight into the prompts library.
+  </p>
+
+  <div class="flex flex-wrap gap-3">
+    <a
+      href="/"
+      class="inline-flex items-center rounded-lg bg-[var(--color-accent)] px-4 py-2.5 text-sm font-medium text-white no-underline transition-opacity hover:opacity-90 focus-visible:opacity-90"
+    >
+      ← Back to home
+    </a>
+    <a
+      href="/prompts/"
+      class="inline-flex items-center rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-sm font-medium text-[var(--color-foreground)] no-underline hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] focus-visible:border-[var(--color-accent)] focus-visible:text-[var(--color-accent)]"
+    >
+      Browse prompts
+    </a>
+  </div>
+</Layout>
+
