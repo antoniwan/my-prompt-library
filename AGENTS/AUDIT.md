@@ -279,12 +279,12 @@ From `package.json`:
 1. **Align content schema and documentation**
 - Add or remove fields like `use_count` consistently across `content.config.ts` and contributor-facing docs.
 
-2. **Remove `fuse.js` and update AGENTS references**
-   - Clarify that search is implemented via a custom index and scoring.
+2. **Remove `fuse.js` and update AGENTS references** ✓ *Done*
+   - Clarify that search is implemented via a custom index and scoring. *`fuse.js` removed from dependencies; search remains custom (no Fuse).*
 
-3. **Introduce a central prompt data module**
+3. **Introduce a central prompt data module** ✓ *Done*
    - Implement `getPublicPrompts()` and helper functions in `src/data/prompts.ts`.
-   - Refactor pages and search components to rely on it.
+   - Refactor pages and search components to rely on it. *Added `src/data/prompts.ts` with `getPublicPrompts()`, `getUniqueTags()`, `getUniqueAuthors()`, `getTagCounts()`, and `DIFFICULTIES`; all pages and `SearchBar.astro` now use it.*
 
 4. **Externalize header search index**
    - Build and serve a single `search-index.json`.

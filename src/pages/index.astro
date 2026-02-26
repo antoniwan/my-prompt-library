@@ -3,12 +3,10 @@ import Layout from "../layouts/Layout.astro";
 import PageHeader from "../components/PageHeader.astro";
 import PromptCard from "../components/PromptCard.astro";
 import ButtonPrimary from "../components/ButtonPrimary.astro";
-import { getCollection } from "astro:content";
+import { getPublicPrompts } from "../data/prompts";
 
-const allPrompts = await getCollection("prompts", ({ data }) => data.visibility === "public");
-const recentPrompts = allPrompts
-  .sort((a, b) => new Date(b.data.updated_at).getTime() - new Date(a.data.updated_at).getTime())
-  .slice(0, 5);
+const allPrompts = await getPublicPrompts();
+const recentPrompts = allPrompts.slice(0, 5);
 ---
 
 <Layout

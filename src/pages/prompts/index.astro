@@ -2,23 +2,12 @@
 import Layout from "../../layouts/Layout.astro";
 import PageHeader from "../../components/PageHeader.astro";
 import PromptCard from "../../components/PromptCard.astro";
-import { getCollection } from "astro:content";
+import { getPublicPrompts, getUniqueTags, getUniqueAuthors, DIFFICULTIES } from "../../data/prompts";
 
-let prompts = await getCollection("prompts", ({ data }) => data.visibility === "public");
-
-prompts = prompts.sort(
-  (a, b) => new Date(b.data.updated_at).getTime() - new Date(a.data.updated_at).getTime(),
-);
-
-const tagSet = new Set<string>();
-const authorSet = new Set<string>();
-for (const entry of prompts) {
-  entry.data.tags.forEach((t: string) => tagSet.add(t));
-  authorSet.add(entry.data.author);
-}
-const tags = Array.from(tagSet).sort((a, b) => a.localeCompare(b));
-const authors = Array.from(authorSet).sort((a, b) => a.localeCompare(b));
-const difficulties = ["beginner", "intermediate", "advanced"] as const;
+const prompts = await getPublicPrompts();
+const tags = getUniqueTags(prompts);
+const authors = getUniqueAuthors(prompts);
+const difficulties = DIFFICULTIES;
 ---
 
 <Layout

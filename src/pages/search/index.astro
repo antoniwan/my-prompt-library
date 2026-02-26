@@ -1,9 +1,9 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import PageHeader from "../../components/PageHeader.astro";
-import { getCollection } from "astro:content";
+import { getPublicPrompts, getUniqueTags, getUniqueAuthors, DIFFICULTIES } from "../../data/prompts";
 
-const prompts = await getCollection("prompts", ({ data }) => data.visibility === "public");
+const prompts = await getPublicPrompts();
 const searchIndex = prompts.map((entry) => ({
   id: entry.id,
   title: entry.data.title,
@@ -14,16 +14,10 @@ const searchIndex = prompts.map((entry) => ({
   bodyExcerpt: typeof entry.body === "string" ? entry.body.slice(0, 800) : "",
 }));
 
-const tagSet = new Set<string>();
-const authorSet = new Set<string>();
-for (const entry of prompts) {
-  entry.data.tags.forEach((t: string) => tagSet.add(t));
-  authorSet.add(entry.data.author);
-}
 const filterOptions = {
-  tags: Array.from(tagSet).sort((a, b) => a.localeCompare(b)),
-  difficulties: ["beginner", "intermediate", "advanced"] as const,
-  authors: Array.from(authorSet).sort((a, b) => a.localeCompare(b)),
+  tags: getUniqueTags(prompts),
+  difficulties: DIFFICULTIES,
+  authors: getUniqueAuthors(prompts),
 };
 ---
 

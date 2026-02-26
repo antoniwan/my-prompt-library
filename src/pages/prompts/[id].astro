@@ -1,10 +1,11 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import TagPill from "../../components/TagPill.astro";
-import { getCollection, getEntry, render } from "astro:content";
+import { getEntry, render } from "astro:content";
+import { getPublicPrompts } from "../../data/prompts";
 
 export async function getStaticPaths() {
-  const prompts = await getCollection("prompts", ({ data }) => data.visibility === "public");
+  const prompts = await getPublicPrompts();
   return prompts.map((entry) => ({
     params: { id: entry.id },
     props: { entry },
