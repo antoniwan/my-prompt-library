@@ -15,7 +15,6 @@ const prompts = defineCollection({
 		summary: z.string().optional(),
 		models_tested: z.array(z.string()).optional(),
 		quality_score: z.number().min(0).max(5).optional(),
-		use_count: z.number().int().min(0).optional(),
 	}),
 });
 

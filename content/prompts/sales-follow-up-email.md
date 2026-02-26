@@ -15,7 +15,6 @@ models_tested:
   - gpt-4o
   - claude-3-opus
 quality_score: 4.5
-use_count: 0
 ---
 
 ## Context

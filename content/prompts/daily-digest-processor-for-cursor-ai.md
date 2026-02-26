@@ -11,7 +11,6 @@ created_at: "2026-02-20"
 updated_at: "2026-02-20"
 models_tested: []
 quality_score: 0
-use_count: 0
 ---
 
 You are processing a daily conversation digest file for integration into an Obsidian knowledge vault.

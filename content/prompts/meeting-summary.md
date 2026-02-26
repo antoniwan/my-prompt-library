@@ -13,7 +13,6 @@ created_at: "2026-02-17"
 updated_at: "2026-02-17"
 models_tested: []
 quality_score: 0
-use_count: 0
 ---
 
 ## Context

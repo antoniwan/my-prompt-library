@@ -16,7 +16,6 @@ created_at: "2026-02-17"
 updated_at: "2026-02-17"
 models_tested: []
 quality_score: 0
-use_count: 0
 ---
 
 You are working inside an existing production front-end codebase. Your objective is to implement light/dark theme capability and create a theme toggle component, while strictly adhering to the principles below.
