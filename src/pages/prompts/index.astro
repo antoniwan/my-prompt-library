@@ -1,5 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import PromptCard from "../../components/PromptCard.astro";
 import { getCollection } from "astro:content";
 
 const tagFilter = Astro.url.searchParams.get("tag");
@@ -8,199 +10,144 @@ const authorFilter = Astro.url.searchParams.get("author");
 let prompts = await getCollection("prompts", ({ data }) => data.visibility === "public");
 
 if (tagFilter) {
-	prompts = prompts.filter((p) => p.data.tags.includes(tagFilter));
+  prompts = prompts.filter((p) => p.data.tags.includes(tagFilter));
 }
 if (difficultyFilter && ["beginner", "intermediate", "advanced"].includes(difficultyFilter)) {
-	prompts = prompts.filter((p) => p.data.difficulty === difficultyFilter);
+  prompts = prompts.filter((p) => p.data.difficulty === difficultyFilter);
 }
 if (authorFilter) {
-	prompts = prompts.filter((p) => p.data.author === authorFilter);
+  prompts = prompts.filter((p) => p.data.author === authorFilter);
 }
 
 prompts = prompts.sort(
-	(a, b) => new Date(b.data.updated_at).getTime() - new Date(a.data.updated_at).getTime(),
+  (a, b) => new Date(b.data.updated_at).getTime() - new Date(a.data.updated_at).getTime(),
 );
 
 const hasFilters = !!(tagFilter || difficultyFilter || authorFilter);
+
+const allPrompts = await getCollection("prompts", ({ data }) => data.visibility === "public");
+const tagSet = new Set<string>();
+const authorSet = new Set<string>();
+for (const entry of allPrompts) {
+  entry.data.tags.forEach((t: string) => tagSet.add(t));
+  authorSet.add(entry.data.author);
+}
+const tags = Array.from(tagSet).sort((a, b) => a.localeCompare(b));
+const authors = Array.from(authorSet).sort((a, b) => a.localeCompare(b));
+const difficulties = ["beginner", "intermediate", "advanced"] as const;
 ---
 
 <Layout
-	title="Prompts — My Prompt Library"
-	description="Browse all curated prompts. Filter by tag, difficulty, and author."
+  title="Prompts — My Prompt Library"
+  description="Browse all curated prompts. Filter by tag, difficulty, and author."
 >
-	<header class="page-header">
-		<h1>Prompts</h1>
-		{hasFilters && (
-			<p class="filter-note">
-				Filtering by:{" "}
-				{[tagFilter && `tag ${tagFilter}`, difficultyFilter && `difficulty ${difficultyFilter}`, authorFilter && `author ${authorFilter}`]
-					.filter(Boolean)
-					.join(" · ")}
-				{" — "}
-				<a href="/prompts/">Show all</a>
-			</p>
-		)}
-	</header>
+  <PageHeader
+    title="Prompts"
+    description="Browse and filter prompts by tag, difficulty, or author."
+  >
+    {hasFilters && (
+      <p class="m-0 mt-1">
+        Filtering by:{" "}
+        {[
+          tagFilter && `tag ${tagFilter}`,
+          difficultyFilter && `difficulty ${difficultyFilter}`,
+          authorFilter && `author ${authorFilter}`,
+        ]
+          .filter(Boolean)
+          .join(" · ")}{" "}
+        — <a href="/prompts/" class="text-[var(--color-accent)] hover:underline">Clear filters</a>
+      </p>
+    )}
+  </PageHeader>
 
-	<ul class="prompt-list" aria-label="List of prompts">
-		{prompts.map((entry) => (
-			<li>
-				<article class="prompt-card">
-					<h2>
-						<a href={`/prompts/${entry.id}/`}>{entry.data.title}</a>
-					</h2>
-					{entry.data.summary && <p class="summary">{entry.data.summary}</p>}
-					<dl class="meta">
-						<dt class="visually-hidden">Tags</dt>
-						<dd class="tags">
-							{entry.data.tags.map((tag) => (
-								<a href={`/tags/${encodeURIComponent(tag)}/`} class="tag">{tag}</a>
-							))}
-						</dd>
-						<dt class="visually-hidden">Difficulty</dt>
-						<dd>
-							<a href={`/prompts/?difficulty=${encodeURIComponent(entry.data.difficulty)}`} class="meta-link">{entry.data.difficulty}</a>
-						</dd>
-						<dt class="visually-hidden">Author</dt>
-						<dd>
-							<a href={`/prompts/?author=${encodeURIComponent(entry.data.author)}`} class="meta-link">{entry.data.author}</a>
-						</dd>
-					</dl>
-				</article>
-			</li>
-		))}
-	</ul>
+  <div class="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+    <span class="text-xs font-medium uppercase tracking-wider text-[var(--color-muted)]">
+      Filters
+    </span>
+    <form method="get" action="/prompts/" class="flex flex-wrap items-center gap-3">
+      <label for="filter-difficulty" class="sr-only">Difficulty</label>
+      <select
+        id="filter-difficulty"
+        name="difficulty"
+        class="rounded-md border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-1.5 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)]"
+        aria-label="Filter by difficulty"
+      >
+        <option value="">All difficulties</option>
+        {difficulties.map((d) => (
+          <option value={d} selected={difficultyFilter === d}>
+            {d}
+          </option>
+        ))}
+      </select>
+      <label for="filter-author" class="sr-only">Author</label>
+      <select
+        id="filter-author"
+        name="author"
+        class="rounded-md border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-1.5 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)]"
+        aria-label="Filter by author"
+      >
+        <option value="">All authors</option>
+        {authors.map((a) => (
+          <option value={a} selected={authorFilter === a}>
+            {a}
+          </option>
+        ))}
+      </select>
+      <label for="filter-tag" class="sr-only">Tag</label>
+      <select
+        id="filter-tag"
+        name="tag"
+        class="rounded-md border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-1.5 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)]"
+        aria-label="Filter by tag"
+      >
+        <option value="">All tags</option>
+        {tags.map((t) => (
+          <option value={t} selected={tagFilter === t}>
+            {t}
+          </option>
+        ))}
+      </select>
+      <button
+        type="submit"
+        class="rounded-md bg-[var(--color-accent)] px-3 py-1.5 text-sm font-medium text-white hover:opacity-90"
+      >
+        Apply
+      </button>
+      {hasFilters && (
+        <a
+          href="/prompts/"
+          class="rounded-md border border-[var(--color-border)] px-3 py-1.5 text-sm text-[var(--color-muted)] no-underline hover:text-[var(--color-foreground)]"
+        >
+          Clear
+        </a>
+      )}
+    </form>
+  </div>
 
-	{prompts.length === 0 && (
-		<p>
-			No prompts found.
-			{hasFilters && (
-				<>
-					{" "}
-					<a href="/prompts/">Show all</a> to clear filters.
-				</>
-			)}
-		</p>
-	)}
+  <ul class="list-none space-y-4 p-0" aria-label="List of prompts">
+    {prompts.map((entry) => (
+      <li>
+        <PromptCard entry={entry} />
+      </li>
+    ))}
+  </ul>
+
+  {prompts.length === 0 && (
+    <p class="text-[var(--color-muted)]">
+      No prompts found.
+      {hasFilters && (
+        <>
+          {" "}
+          <a href="/prompts/" class="text-[var(--color-accent)] hover:underline">Show all</a> to
+          clear filters.
+        </>
+      )}
+    </p>
+  )}
 </Layout>
 
-<style>
-	.page-header {
-		margin-bottom: 1.5rem;
-	}
-
-	.page-header h1 {
-		font-size: 1.5rem;
-		margin: 0 0 0.5rem;
-	}
-
-	.filter-note {
-		font-size: 0.875rem;
-		color: var(--color-text-muted);
-		margin: 0;
-	}
-
-	.filter-note a,
-	.meta-link {
-		color: var(--color-accent);
-		text-decoration: none;
-	}
-
-	.meta-link:hover,
-	.meta-link:focus-visible {
-		text-decoration: underline;
-		outline: none;
-	}
-
-	.prompt-list {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	.prompt-card {
-		padding: 1.25rem;
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: 0.375rem;
-	}
-
-	.prompt-card h2 {
-		font-size: 1.125rem;
-		margin: 0 0 0.5rem;
-	}
-
-	.prompt-card h2 a {
-		color: inherit;
-		text-decoration: none;
-	}
-
-	.prompt-card h2 a:hover,
-	.prompt-card h2 a:focus-visible {
-		color: var(--color-accent);
-		text-decoration: underline;
-		outline: none;
-	}
-
-	.summary {
-		font-size: 0.875rem;
-		color: var(--color-text-muted);
-		margin: 0 0 0.75rem;
-		line-height: 1.5;
-	}
-
-	.meta {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.75rem 1rem;
-		margin: 0;
-		font-size: 0.8125rem;
-		color: var(--color-text-muted);
-	}
-
-	.meta dt,
-	.meta dd {
-		margin: 0;
-	}
-
-	.meta dd:not(.tags)::after {
-		content: "";
-	}
-
-	.tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.375rem;
-	}
-
-	.tag {
-		display: inline-block;
-		padding: 0.2em 0.5em;
-		background: var(--color-border);
-		border-radius: 0.25rem;
-		color: var(--color-text-muted);
-		text-decoration: none;
-	}
-
-	.tag:hover,
-	.tag:focus-visible {
-		background: var(--color-accent);
-		color: white;
-		outline: none;
-	}
-
-	.visually-hidden {
-		position: absolute;
-		width: 1px;
-		height: 1px;
-		padding: 0;
-		margin: -1px;
-		overflow: hidden;
-		clip: rect(0, 0, 0, 0);
-		white-space: nowrap;
-		border: 0;
-	}
-</style>
+<script>
+  document.querySelectorAll("#filter-difficulty, #filter-author, #filter-tag").forEach((el) => {
+    el.addEventListener("change", () => el.closest("form")?.submit());
+  });
+</script>

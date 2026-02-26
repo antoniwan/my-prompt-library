@@ -1,347 +1,160 @@
 ---
+import "../styles/global.css";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import SearchBar from "../components/SearchBar.astro";
 
 interface Props {
-	title?: string;
-	description?: string;
-	/** Path for canonical URL and og:url (e.g. /prompts/foo/). Used only when Astro.site is set. */
-	canonicalPath?: string;
-	/** Optional JSON-LD structured data (object). Rendered as application/ld+json. */
-	structuredData?: object;
-	/** Open Graph type: "website" or "article". Default "website". */
-	ogType?: "website" | "article";
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  structuredData?: object;
+  ogType?: "website" | "article";
 }
 
 const {
-	title = "My Prompt Library",
-	description = "A curated, Git-native library of structured prompts for sovereign AI workflows.",
-	canonicalPath,
-	structuredData,
-	ogType = "website",
+  title = "My Prompt Library",
+  description = "A curated, Git-native library of structured prompts for sovereign AI workflows.",
+  canonicalPath,
+  structuredData,
+  ogType = "website",
 } = Astro.props;
 
 const canonicalHref =
-	Astro.site && canonicalPath ? new URL(canonicalPath, Astro.site).href : undefined;
+  Astro.site && canonicalPath ? new URL(canonicalPath, Astro.site).href : undefined;
 const jsonLdSafe =
-	structuredData != null
-		? JSON.stringify(structuredData).replace(/<\/script>/gi, "<\\/script>")
-		: "";
+  structuredData != null
+    ? JSON.stringify(structuredData).replace(/<\/script>/gi, "<\\/script>")
+    : "";
+
+const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0a0a0a;--color-foreground:#fafafa;--color-muted:#a1a1a1;--color-border:#262626;--color-surface:#171717;--color-surface-hover:#262626;--color-accent:#0070f3}[data-theme="light"]{--color-background:#fff;--color-foreground:#171717;--color-muted:#737373;--color-border:#e5e5e5;--color-surface:#fafafa;--color-surface-hover:#f5f5f5}body{background:var(--color-background);color:var(--color-foreground);font-family:system-ui,sans-serif;line-height:1.6;margin:0;min-height:100vh}`;
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<script is:inline>
-			(function () {
-				try {
-					if ("serviceWorker" in navigator) {
-						navigator.serviceWorker.register("/sw.js").catch(function () {});
-					}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <style is:inline set:html={criticalCSS} />
+    <script is:inline>
+      (function () {
+        try {
+          if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js").catch(function () {});
+          }
+          var stored = localStorage.getItem("theme");
+          var theme = stored === "light" || stored === "dark"
+            ? stored
+            : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+          document.documentElement.setAttribute("data-theme", theme);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    {canonicalHref && <link rel="canonical" href={canonicalHref} />}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    {canonicalHref && <meta property="og:url" content={canonicalHref} />}
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <title>{title}</title>
+    {jsonLdSafe && (
+      <script type="application/ld+json" set:html={jsonLdSafe} />
+    )}
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a href="#main" class="skip-link">Skip to main content</a>
 
-					var stored = localStorage.getItem("theme");
-					var theme = stored === "light" || stored === "dark"
-						? stored
-						: (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-					document.documentElement.setAttribute("data-theme", theme);
-				} catch (e) {}
-			})();
-		</script>
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content={description} />
-		{canonicalHref && <link rel="canonical" href={canonicalHref} />}
-		<meta property="og:title" content={title} />
-		<meta property="og:description" content={description} />
-		<meta property="og:type" content={ogType} />
-		{canonicalHref && <meta property="og:url" content={canonicalHref} />}
-		<meta name="twitter:card" content="summary" />
-		<meta name="twitter:title" content={title} />
-		<meta name="twitter:description" content={description} />
-		<title>{title}</title>
-		{jsonLdSafe && (
-			<script type="application/ld+json" set:html={jsonLdSafe} />
-		)}
-	</head>
-	<body>
-		<a href="#main" class="skip-link">Skip to main content</a>
-		<header class="site-header" role="banner">
-			<nav class="nav" aria-label="Main">
-				<a href="/" class="nav-brand">MPL</a>
-				<ul class="nav-links">
-					<li><a href="/prompts/">Prompts</a></li>
-					<li><a href="/tags/">Tags</a></li>
-					<li><a href="/search/">Search</a></li>
-				</ul>
-				<div class="nav-search-slot">
-					<SearchBar class="nav-search" />
-				</div>
-				<ThemeToggle />
-			</nav>
-		</header>
-		<main id="main" class="main">
-			<div class="main-inner">
-				<slot />
-			</div>
-		</main>
-		<footer class="site-footer" role="contentinfo">
-			<p>My Prompt Library — curated, version-controlled, portable.</p>
-		</footer>
-	</body>
+    <header
+      class="sticky top-0 z-50 flex h-14 w-full items-center border-b border-[var(--color-border)] bg-[var(--color-background)]/80 backdrop-blur-md"
+      role="banner"
+    >
+      <nav class="mx-auto flex w-full max-w-4xl items-center gap-6 px-4 sm:px-6" aria-label="Main">
+        <a
+          href="/"
+          class="shrink-0 text-lg font-semibold tracking-tight text-[var(--color-foreground)] no-underline hover:text-[var(--color-accent)] focus-visible:text-[var(--color-accent)]"
+        >
+          MPL
+        </a>
+        <ul class="flex shrink-0 list-none gap-4 p-0 sm:gap-6">
+          <li>
+            <a
+              href="/prompts/"
+              class="text-sm text-[var(--color-muted)] no-underline hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-accent)]"
+            >
+              Prompts
+            </a>
+          </li>
+          <li>
+            <a
+              href="/tags/"
+              class="text-sm text-[var(--color-muted)] no-underline hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-accent)]"
+            >
+              Tags
+            </a>
+          </li>
+          <li>
+            <a
+              href="/search/"
+              class="text-sm text-[var(--color-muted)] no-underline hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-accent)]"
+            >
+              Search
+            </a>
+          </li>
+        </ul>
+        <div class="min-w-0 flex-1 px-2 sm:mx-4 sm:max-w-md">
+          <SearchBar class="w-full" />
+        </div>
+        <ThemeToggle />
+      </nav>
+    </header>
+
+    <main id="main" class="flex-1 px-4 pb-16 pt-8 sm:px-6">
+      <div class="mx-auto max-w-3xl">
+        <slot />
+      </div>
+    </main>
+
+    <footer
+      class="shrink-0 border-t border-[var(--color-border)] bg-[var(--color-surface)] py-6 text-center"
+      role="contentinfo"
+    >
+      <p class="m-0 text-xs text-[var(--color-muted)]">
+        My Prompt Library — curated, version-controlled, portable.
+      </p>
+    </footer>
+  </body>
 </html>
 
 <style is:global>
-	:root,
-	[data-theme="dark"] {
-		--color-bg: #0f0f0f;
-		--color-surface: #1a1a1a;
-		--color-text: #e5e5e5;
-		--color-text-muted: #a3a3a3;
-		--color-accent: #7c3aed;
-		--color-accent-hover: #8b5cf6;
-		--color-border: #262626;
-		--font-sans: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-		--header-h: 3.5rem;
-		--content-max: 52rem;
-	}
-
-	[data-theme="light"] {
-		--color-bg: #fafafa;
-		--color-surface: #ffffff;
-		--color-text: #171717;
-		--color-text-muted: #525252;
-		--color-accent: #7c3aed;
-		--color-accent-hover: #6d28d9;
-		--color-border: #e5e5e5;
-	}
-
-	html {
-		scroll-behavior: smooth;
-	}
-
-	html,
-	body {
-		margin: 0;
-		min-height: 100vh;
-		background: var(--color-bg);
-		color: var(--color-text);
-		font-family: var(--font-sans);
-		line-height: 1.6;
-	}
-
-	body {
-		display: flex;
-		flex-direction: column;
-	}
-
-	.skip-link {
-		position: fixed;
-		top: 0;
-		left: 0;
-		padding: 0.5rem 1rem;
-		background: var(--color-accent);
-		color: white;
-		text-decoration: none;
-		z-index: 200;
-		border-radius: 0 0 0.25rem 0;
-		transition: transform 0.2s;
-		transform: translateY(-100%);
-	}
-
-	.skip-link:focus {
-		transform: translateY(0);
-		outline: 2px solid white;
-		outline-offset: 2px;
-	}
-
-	/* Fixed full-width header */
-	.site-header {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: var(--header-h);
-		z-index: 100;
-		background: var(--color-surface);
-		border-bottom: 1px solid var(--color-border);
-	}
-
-	.nav {
-		display: flex;
-		align-items: center;
-		gap: 1.25rem;
-		height: 100%;
-		width: 100%;
-		max-width: 100%;
-		padding: 0 1.25rem;
-		box-sizing: border-box;
-	}
-
-	.nav-brand {
-		font-weight: 700;
-		font-size: 1.125rem;
-		letter-spacing: 0.02em;
-		color: var(--color-text);
-		text-decoration: none;
-		flex-shrink: 0;
-	}
-
-	.nav-brand:hover,
-	.nav-brand:focus-visible {
-		color: var(--color-accent);
-	}
-
-	.nav-brand:focus-visible {
-		outline: 2px solid var(--color-accent);
-		outline-offset: 2px;
-	}
-
-	.nav-links {
-		display: flex;
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		gap: 1.5rem;
-		flex-shrink: 0;
-	}
-
-	.nav-links a {
-		color: var(--color-text-muted);
-		text-decoration: none;
-		font-size: 0.9375rem;
-	}
-
-	.nav-links a:hover,
-	.nav-links a:focus-visible {
-		color: var(--color-accent);
-	}
-
-	.nav-links a:focus-visible {
-		outline: 2px solid var(--color-accent);
-		outline-offset: 2px;
-	}
-
-	/* Fixed search area: consistent width, centered in remaining space */
-	.nav-search-slot {
-		flex: 1 1 auto;
-		display: flex;
-		justify-content: center;
-		min-width: 0;
-		max-width: 28rem;
-		margin: 0 auto;
-	}
-
-	.nav-search {
-		width: 100%;
-	}
-
-	.theme-toggle {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 2.25rem;
-		height: 2.25rem;
-		padding: 0;
-		background: transparent;
-		border: 1px solid var(--color-border);
-		border-radius: 0.25rem;
-		color: var(--color-text-muted);
-		cursor: pointer;
-		flex-shrink: 0;
-	}
-
-	.theme-toggle:hover,
-	.theme-toggle:focus-visible {
-		color: var(--color-accent);
-		border-color: var(--color-accent);
-	}
-
-	.theme-toggle:focus-visible {
-		outline: 2px solid var(--color-accent);
-		outline-offset: 2px;
-	}
-
-	/* Full viewport main: padding for fixed header, readable content column */
-	.main {
-		flex: 1 0 auto;
-		width: 100%;
-		padding-top: var(--header-h);
-		padding-left: 1.25rem;
-		padding-right: 1.25rem;
-		padding-bottom: 3rem;
-		box-sizing: border-box;
-	}
-
-	.main-inner {
-		max-width: var(--content-max);
-		margin: 0 auto;
-		padding-top: 1.5rem;
-	}
-
-	.site-footer {
-		flex-shrink: 0;
-		width: 100%;
-		border-top: 1px solid var(--color-border);
-		background: var(--color-surface);
-		padding: 1rem 1.25rem;
-		text-align: center;
-	}
-
-	.site-footer p {
-		margin: 0;
-		font-size: 0.8125rem;
-		color: var(--color-text-muted);
-	}
-
-	@media (max-width: 768px) {
-		.nav {
-			gap: 0.75rem;
-			padding: 0 1rem;
-		}
-
-		.nav-links {
-			gap: 1rem;
-		}
-
-		.nav-links a {
-			font-size: 0.875rem;
-		}
-
-		.nav-search-slot {
-			max-width: 12rem;
-		}
-
-		.main {
-			padding-left: 1rem;
-			padding-right: 1rem;
-		}
-	}
-
-	@media (max-width: 540px) {
-		.site-header {
-			height: auto;
-			min-height: 3.5rem;
-		}
-
-		.nav {
-			flex-wrap: wrap;
-			padding: 0.75rem 1rem;
-			gap: 0.75rem;
-			align-content: flex-start;
-		}
-
-		.nav-search-slot {
-			order: 3;
-			flex-basis: 100%;
-			max-width: none;
-			min-height: 2.5rem;
-		}
-
-		.main {
-			padding-top: 7rem;
-		}
-	}
+  /* Layout uses design tokens from global.css; theme toggle targets .theme-toggle */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-muted);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover,
+  .theme-toggle:focus-visible {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
 </style>

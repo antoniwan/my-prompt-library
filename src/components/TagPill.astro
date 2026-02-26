@@ -1,0 +1,21 @@
+---
+interface Props {
+  tag: string;
+  count?: number;
+  href?: string;
+}
+
+const { tag, count, href = `/tags/${encodeURIComponent(tag)}/` } = Astro.props;
+---
+
+<a
+  href={href}
+  class="inline-flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm font-medium text-[var(--color-foreground)] no-underline transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] focus-visible:border-[var(--color-accent)] focus-visible:text-[var(--color-accent)]"
+>
+  <span>{tag}</span>
+  {count !== undefined && (
+    <span class="text-xs text-[var(--color-muted)]" aria-label={`${count} prompt(s)`}>
+      {count}
+    </span>
+  )}
+</a>

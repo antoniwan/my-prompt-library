@@ -3,428 +3,227 @@ import Layout from "../../layouts/Layout.astro";
 import { getCollection, getEntry, render } from "astro:content";
 
 export async function getStaticPaths() {
-	const prompts = await getCollection("prompts", ({ data }) => data.visibility === "public");
-	return prompts.map((entry) => ({
-		params: { id: entry.id },
-		props: { entry },
-	}));
+  const prompts = await getCollection("prompts", ({ data }) => data.visibility === "public");
+  return prompts.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
 }
 
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
 
-// Ensure Markdown tab shows raw source (with # headers): escape so it is never interpreted as HTML
 const rawMarkdown = typeof entry.body === "string" ? entry.body : "";
 const escapedMarkdown = rawMarkdown
-	.replace(/&/g, "&amp;")
-	.replace(/</g, "&lt;")
-	.replace(/>/g, "&gt;")
-	.replace(/"/g, "&quot;");
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;");
 
 const title = `${entry.data.title} — My Prompt Library`;
 const description =
-	entry.data.summary ||
-	(entry.data.title && `${entry.data.title}. A curated prompt from My Prompt Library.`);
+  entry.data.summary ||
+  (entry.data.title && `${entry.data.title}. A curated prompt from My Prompt Library.`);
 const canonicalPath = `/prompts/${entry.id}/`;
 const structuredData = {
-	"@context": "https://schema.org",
-	"@type": "Article",
-	name: entry.data.title,
-	description: description,
-	author: {
-		"@type": "Person",
-		name: entry.data.author,
-	},
-	dateModified: entry.data.updated_at,
-	...(Astro.site && { url: new URL(canonicalPath, Astro.site).href }),
+  "@context": "https://schema.org",
+  "@type": "Article",
+  name: entry.data.title,
+  description: description,
+  author: { "@type": "Person", name: entry.data.author },
+  dateModified: entry.data.updated_at,
+  ...(Astro.site && { url: new URL(canonicalPath, Astro.site).href }),
 };
 ---
 
 <Layout
-	title={title}
-	description={description}
-	canonicalPath={canonicalPath}
-	structuredData={structuredData}
-	ogType="article"
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  structuredData={structuredData}
+  ogType="article"
 >
-	<article class="prompt-detail">
-		<header class="prompt-header">
-			<h1>{entry.data.title}</h1>
-		</header>
+  <article class="max-w-3xl">
+    <header class="mb-4">
+      <h1 class="text-2xl font-semibold tracking-tight text-[var(--color-foreground)] sm:text-3xl">
+        {entry.data.title}
+      </h1>
+    </header>
 
-		{entry.data.summary && <p class="summary">{entry.data.summary}</p>}
+    {entry.data.summary && (
+      <p class="mb-6 text-[var(--color-muted)]">{entry.data.summary}</p>
+    )}
 
-		<div class="copy-cta">
-			<button
-					type="button"
-					class="copy-button"
-					data-copy-target="prompt-text"
-					aria-describedby="copy-heading copy-status"
-					aria-live="polite"
-				>
-					Copy to clipboard
-				</button>
-			<span id="copy-status" class="copy-status" aria-live="polite" role="status"></span>
-			<h2 id="copy-heading" class="visually-hidden">Copy prompt</h2>
-		</div>
+    <div class="mb-6 flex flex-wrap items-center gap-3">
+      <button
+        type="button"
+        class="copy-button rounded-lg bg-[var(--color-accent)] px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 focus-visible:opacity-90"
+        data-copy-target="prompt-text"
+        aria-describedby="copy-status"
+        aria-live="polite"
+      >
+        Copy to clipboard
+      </button>
+      <span id="copy-status" class="text-sm text-[var(--color-muted)]" aria-live="polite" role="status"></span>
+    </div>
 
-		<div class="prompt-tabs" role="tablist" aria-label="Prompt view">
-			<button
-				type="button"
-				role="tab"
-				id="tab-preview"
-				aria-selected="true"
-				aria-controls="panel-preview"
-				class="prompt-tab prompt-tab--active"
-			>
-				Preview
-			</button>
-			<button
-				type="button"
-				role="tab"
-				id="tab-markdown"
-				aria-selected="false"
-				aria-controls="panel-markdown"
-				class="prompt-tab"
-			>
-				Markdown
-			</button>
-		</div>
+    <div class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]" role="tablist" aria-label="Prompt view">
+      <div class="flex border-b border-[var(--color-border)]">
+        <button
+          type="button"
+          role="tab"
+          id="tab-preview"
+          aria-selected="true"
+          aria-controls="panel-preview"
+          class="prompt-tab rounded-t-lg border-b-2 border-[var(--color-accent)] bg-transparent px-4 py-3 text-sm font-medium text-[var(--color-accent)]"
+        >
+          Preview
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="tab-markdown"
+          aria-selected="false"
+          aria-controls="panel-markdown"
+          class="prompt-tab rounded-t-lg border-b-2 border-transparent bg-transparent px-4 py-3 text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-foreground)]"
+        >
+          Markdown
+        </button>
+      </div>
 
-		<div
-			id="panel-preview"
-			role="tabpanel"
-			aria-labelledby="tab-preview"
-			class="prompt-tabpanel"
-		>
-			<div class="prompt-body">
-				<Content />
-			</div>
-		</div>
+      <div
+        id="panel-preview"
+        role="tabpanel"
+        aria-labelledby="tab-preview"
+        class="prompt-tabpanel p-5"
+      >
+        <div class="prompt-body">
+          <Content />
+        </div>
+      </div>
 
-		<div
-			id="panel-markdown"
-			role="tabpanel"
-			aria-labelledby="tab-markdown"
-			class="prompt-tabpanel prompt-tabpanel--hidden"
-			hidden
-		>
-			<pre id="prompt-text" class="prompt-text" aria-label="Full prompt text"><code set:html={escapedMarkdown}></code></pre>
-		</div>
+      <div
+        id="panel-markdown"
+        role="tabpanel"
+        aria-labelledby="tab-markdown"
+        class="prompt-tabpanel hidden p-5"
+        hidden
+      >
+        <pre
+          id="prompt-text"
+          class="overflow-x-auto rounded bg-[var(--color-background)] p-4 text-sm leading-relaxed whitespace-pre-wrap break-words border border-[var(--color-border)]"
+          aria-label="Full prompt text"
+        ><code set:html={escapedMarkdown}></code></pre>
+      </div>
+    </div>
 
-		<footer class="prompt-meta-footer">
-			<dl class="meta">
-				<dt>Author</dt>
-				<dd>{entry.data.author}</dd>
-				<dt>Difficulty</dt>
-				<dd>{entry.data.difficulty}</dd>
-				<dt>Updated</dt>
-				<dd>{new Date(entry.data.updated_at).toLocaleDateString()}</dd>
-				<dt class="visually-hidden">Tags</dt>
-				<dd class="tags">
-					{entry.data.tags.map((tag) => (
-						<a href={`/tags/${encodeURIComponent(tag)}/`} class="tag">{tag}</a>
-					))}
-				</dd>
-			</dl>
-		</footer>
-	</article>
+    <footer class="mt-8 border-t border-[var(--color-border)] pt-6">
+      <dl class="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-sm">
+        <dt class="font-medium text-[var(--color-foreground)]">Author</dt>
+        <dd class="text-[var(--color-muted)]">{entry.data.author}</dd>
+        <dt class="font-medium text-[var(--color-foreground)]">Difficulty</dt>
+        <dd class="text-[var(--color-muted)]">{entry.data.difficulty}</dd>
+        <dt class="font-medium text-[var(--color-foreground)]">Updated</dt>
+        <dd class="text-[var(--color-muted)]">{new Date(entry.data.updated_at).toLocaleDateString()}</dd>
+        <dt class="visually-hidden">Tags</dt>
+        <dd class="col-span-2 mt-2 flex flex-wrap gap-1.5">
+          {entry.data.tags.map((tag) => (
+            <a
+              href={`/tags/${encodeURIComponent(tag)}/`}
+              class="rounded-md bg-[var(--color-border)] px-2 py-0.5 text-xs text-[var(--color-muted)] no-underline hover:bg-[var(--color-accent)] hover:text-white"
+            >
+              {tag}
+            </a>
+          ))}
+        </dd>
+      </dl>
+    </footer>
+  </article>
 </Layout>
 
 <script>
-	// @ts-nocheck — inline script; tab and copy logic
-	document.querySelectorAll("[data-copy-target]").forEach((btn) => {
-		const targetId = btn.getAttribute("data-copy-target");
-		if (!targetId) return;
-		const target = document.getElementById(targetId);
-		const statusEl = document.getElementById("copy-status");
-		if (!target || !statusEl) return;
+  document.querySelectorAll("[data-copy-target]").forEach((btn) => {
+    const targetId = btn.getAttribute("data-copy-target");
+    if (!targetId) return;
+    const target = document.getElementById(targetId);
+    const statusEl = document.getElementById("copy-status");
+    if (!target || !statusEl) return;
 
-		const labelCopy = "Copy to clipboard";
-		const labelCopied = "Copied!";
-		const labelFailed = "Copy failed";
-		const resetDelay = 2000;
+    const labelCopy = "Copy to clipboard";
+    const labelCopied = "Copied!";
+    const labelFailed = "Copy failed";
+    const resetDelay = 2000;
 
-		btn.addEventListener("click", async () => {
-			const text = target.textContent?.trim() || "";
-			try {
-				await navigator.clipboard.writeText(text);
-				btn.textContent = labelCopied;
-				btn.classList.add("copy-button--copied");
-				btn.classList.remove("copy-button--failed");
-				statusEl.textContent = labelCopied;
-				statusEl.removeAttribute("aria-hidden");
-			} catch {
-				btn.textContent = labelFailed;
-				btn.classList.add("copy-button--failed");
-				btn.classList.remove("copy-button--copied");
-				statusEl.textContent = labelFailed;
-				statusEl.removeAttribute("aria-hidden");
-			}
-			setTimeout(() => {
-				btn.textContent = labelCopy;
-				btn.classList.remove("copy-button--copied", "copy-button--failed");
-				statusEl.textContent = "";
-			}, resetDelay);
-		});
-	});
+    btn.addEventListener("click", async () => {
+      const text = target.textContent?.trim() || "";
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = labelCopied;
+        btn.classList.add("!bg-[var(--color-success)]");
+        statusEl.textContent = labelCopied;
+      } catch {
+        btn.textContent = labelFailed;
+        btn.classList.add("!bg-[var(--color-error)]");
+        statusEl.textContent = labelFailed;
+      }
+      setTimeout(() => {
+        btn.textContent = labelCopy;
+        btn.classList.remove("!bg-[var(--color-success)]", "!bg-[var(--color-error)]");
+        statusEl.textContent = "";
+      }, resetDelay);
+    });
+  });
 
-	const tabs = document.querySelectorAll(".prompt-tab");
-	const panels = document.querySelectorAll(".prompt-tabpanel");
+  const tabs = document.querySelectorAll(".prompt-tab");
+  const panels = document.querySelectorAll(".prompt-tabpanel");
 
-	/** @param {number} index */
-	function showPanel(index) {
-		tabs.forEach((tab, i) => {
-			const selected = i === index;
-			tab.setAttribute("aria-selected", String(selected));
-			tab.classList.toggle("prompt-tab--active", selected);
-		});
-		panels.forEach((panel, i) => {
-			const visible = i === index;
-			panel.classList.toggle("prompt-tabpanel--hidden", !visible);
-			/** @type {HTMLElement} */ (panel).hidden = !visible;
-		});
-	}
+  function showPanel(index) {
+    tabs.forEach((tab, i) => {
+      const selected = i === index;
+      tab.setAttribute("aria-selected", String(selected));
+      tab.classList.toggle("border-[var(--color-accent)]", selected);
+      tab.classList.toggle("text-[var(--color-accent)]", selected);
+      tab.classList.toggle("border-transparent", !selected);
+      tab.classList.toggle("text-[var(--color-muted)]", !selected);
+    });
+    panels.forEach((panel, i) => {
+      const visible = i === index;
+      panel.classList.toggle("hidden", !visible);
+      panel.hidden = !visible;
+    });
+  }
 
-	tabs.forEach((tab, index) => {
-		tab.addEventListener("click", () => showPanel(index));
-		tab.addEventListener("keydown", (e) => {
-			const ke = /** @type {KeyboardEvent} */ (e);
-			let next = null;
-			if (ke.key === "ArrowRight" || ke.key === "Home") {
-				next = ke.key === "Home" ? 0 : Math.min(index + 1, tabs.length - 1);
-			} else if (ke.key === "ArrowLeft" || ke.key === "End") {
-				next = ke.key === "End" ? tabs.length - 1 : Math.max(index - 1, 0);
-			}
-			if (next !== null) {
-				e.preventDefault();
-				showPanel(next);
-				/** @type {HTMLElement} */ (tabs[next]).focus();
-			}
-		});
-	});
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => showPanel(index));
+    tab.addEventListener("keydown", (e) => {
+      let next = null;
+      if (e.key === "ArrowRight" || e.key === "Home") {
+        next = e.key === "Home" ? 0 : Math.min(index + 1, tabs.length - 1);
+      } else if (e.key === "ArrowLeft" || e.key === "End") {
+        next = e.key === "End" ? tabs.length - 1 : Math.max(index - 1, 0);
+      }
+      if (next !== null) {
+        e.preventDefault();
+        showPanel(next);
+        tabs[next].focus();
+      }
+    });
+  });
 </script>
 
-<style>
-	.prompt-detail {
-		max-width: 48rem;
-	}
-
-	.prompt-header {
-		margin-bottom: 0.75rem;
-	}
-
-	.prompt-header h1 {
-		font-size: 1.5rem;
-		margin: 0;
-	}
-
-	.copy-cta {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.75rem;
-		margin-bottom: 1.5rem;
-	}
-
-	.prompt-meta-footer {
-		margin-top: 2rem;
-		padding-top: 1.5rem;
-		border-top: 1px solid var(--color-border);
-	}
-
-	.meta {
-		display: grid;
-		grid-template-columns: auto 1fr;
-		gap: 0.25rem 1.5rem;
-		margin: 0;
-		font-size: 0.875rem;
-		color: var(--color-text-muted);
-	}
-
-	.meta dt {
-		margin: 0;
-		font-weight: 500;
-		color: var(--color-text);
-	}
-
-	.meta dd {
-		margin: 0;
-	}
-
-	.meta .tags {
-		grid-column: 1 / -1;
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.375rem;
-		margin-top: 0.25rem;
-	}
-
-	.tag {
-		display: inline-block;
-		padding: 0.2em 0.5em;
-		background: var(--color-border);
-		border-radius: 0.25rem;
-		color: var(--color-text-muted);
-		text-decoration: none;
-	}
-
-	.tag:hover,
-	.tag:focus-visible {
-		background: var(--color-accent);
-		color: white;
-	}
-
-	.summary {
-		font-size: 1rem;
-		color: var(--color-text-muted);
-		margin: 0 0 1.5rem;
-	}
-
-	.prompt-body {
-		margin-bottom: 2rem;
-	}
-
-	.prompt-body :global(h2) {
-		font-size: 1.125rem;
-		margin: 1.5rem 0 0.5rem;
-	}
-
-	.prompt-body :global(p) {
-		margin: 0 0 0.75rem;
-	}
-
-	.prompt-body :global(ul),
-	.prompt-body :global(ol) {
-		margin: 0 0 0.75rem;
-		padding-left: 1.5rem;
-	}
-
-	.copy-section {
-		padding: 1rem;
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: 0.375rem;
-	}
-
-	.prompt-tabs {
-		display: flex;
-		gap: 0;
-		margin-bottom: 0;
-		border-bottom: 1px solid var(--color-border);
-	}
-
-	.prompt-tab {
-		padding: 0.5rem 1rem;
-		font-size: 0.875rem;
-		font-weight: 500;
-		background: transparent;
-		border: none;
-		border-bottom: 2px solid transparent;
-		margin-bottom: -1px;
-		color: var(--color-text-muted);
-		cursor: pointer;
-		border-radius: 0.25rem 0.25rem 0 0;
-	}
-
-	.prompt-tab:hover {
-		color: var(--color-text);
-	}
-
-	.prompt-tab--active,
-	.prompt-tab:focus-visible {
-		color: var(--color-accent);
-		border-bottom-color: var(--color-accent);
-		outline: none;
-	}
-
-	.prompt-tabpanel {
-		padding: 1rem;
-		border: 1px solid var(--color-border);
-		border-top: none;
-		border-radius: 0 0 0.375rem 0.375rem;
-		background: var(--color-surface);
-	}
-
-	.prompt-tabpanel--hidden {
-		display: none;
-	}
-
-	.prompt-tabpanel .prompt-body {
-		margin-bottom: 0;
-		padding: 0;
-	}
-
-	.copy-cta .copy-button {
-		padding: 0.625rem 1.25rem;
-		font-size: 1rem;
-		font-weight: 500;
-		background: var(--color-accent);
-		color: white;
-		border: none;
-		border-radius: 0.375rem;
-		cursor: pointer;
-	}
-
-	.copy-cta .copy-button:hover,
-	.copy-cta .copy-button:focus-visible {
-		background: var(--color-accent-hover);
-		outline: 2px solid var(--color-accent-hover);
-		outline-offset: 2px;
-	}
-
-	.copy-cta .copy-button--copied {
-		background: var(--color-copy-success, #059669);
-	}
-
-	.copy-cta .copy-button--copied:hover,
-	.copy-cta .copy-button--copied:focus-visible {
-		background: var(--color-copy-success-hover, #047857);
-	}
-
-	.copy-cta .copy-button--failed {
-		background: var(--color-copy-failed, #dc2626);
-	}
-
-	.copy-cta .copy-button--failed:hover,
-	.copy-cta .copy-button--failed:focus-visible {
-		background: var(--color-copy-failed-hover, #b91c1c);
-	}
-
-	.copy-cta .copy-status {
-		font-size: 0.875rem;
-		color: var(--color-text-muted);
-	}
-
-	.prompt-text {
-		margin: 0;
-		padding: 1rem;
-		background: var(--color-bg);
-		border: 1px solid var(--color-border);
-		border-radius: 0.25rem;
-		font-size: 0.8125rem;
-		line-height: 1.6;
-		white-space: pre-wrap;
-		word-break: break-word;
-		overflow-x: auto;
-	}
-
-	.prompt-text code {
-		font-family: inherit;
-		font-size: inherit;
-		background: none;
-		padding: 0;
-	}
-
-	.visually-hidden {
-		position: absolute;
-		width: 1px;
-		height: 1px;
-		padding: 0;
-		margin: -1px;
-		overflow: hidden;
-		clip: rect(0, 0, 0, 0);
-		white-space: nowrap;
-		border: 0;
-	}
+<style is:global>
+  .prompt-body :global(h2) {
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .prompt-body :global(p) {
+    margin: 0 0 0.75rem;
+  }
+  .prompt-body :global(ul),
+  .prompt-body :global(ol) {
+    margin: 0 0 0.75rem;
+    padding-left: 1.5rem;
+  }
 </style>

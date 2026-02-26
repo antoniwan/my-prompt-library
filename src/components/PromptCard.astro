@@ -1,0 +1,61 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  entry: CollectionEntry<"prompts">;
+  showTags?: boolean;
+}
+
+const { entry, showTags = true } = Astro.props;
+---
+
+<article class="group block rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-5 transition-colors hover:border-[var(--color-accent)] hover:bg-[var(--color-surface-hover)]">
+  <h2 class="text-base font-semibold leading-tight">
+    <a
+      href={`/prompts/${entry.id}/`}
+      class="text-[var(--color-foreground)] no-underline hover:text-[var(--color-accent)] hover:underline focus-visible:text-[var(--color-accent)]"
+    >
+      {entry.data.title}
+    </a>
+  </h2>
+  {entry.data.summary && (
+    <p class="mt-1.5 text-sm text-[var(--color-muted)] line-clamp-2">
+      {entry.data.summary}
+    </p>
+  )}
+  <dl class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[var(--color-muted)]">
+    {showTags && entry.data.tags.length > 0 && (
+      <>
+        <dt class="visually-hidden">Tags</dt>
+        <dd class="flex flex-wrap gap-1.5">
+          {entry.data.tags.map((tag) => (
+            <a
+              href={`/tags/${encodeURIComponent(tag)}/`}
+              class="rounded-md bg-[var(--color-border)] px-2 py-0.5 text-[var(--color-muted)] no-underline hover:bg-[var(--color-accent)] hover:text-white focus-visible:bg-[var(--color-accent)] focus-visible:text-white"
+            >
+              {tag}
+            </a>
+          ))}
+        </dd>
+      </>
+    )}
+    <dt class="visually-hidden">Difficulty</dt>
+    <dd>
+      <a
+        href={`/prompts/?difficulty=${encodeURIComponent(entry.data.difficulty)}`}
+        class="text-[var(--color-accent)] hover:underline focus-visible:underline"
+      >
+        {entry.data.difficulty}
+      </a>
+    </dd>
+    <dt class="visually-hidden">Author</dt>
+    <dd>
+      <a
+        href={`/prompts/?author=${encodeURIComponent(entry.data.author)}`}
+        class="text-[var(--color-accent)] hover:underline focus-visible:underline"
+      >
+        {entry.data.author}
+      </a>
+    </dd>
+  </dl>
+</article>

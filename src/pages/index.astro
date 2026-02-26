@@ -1,142 +1,56 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import PromptCard from "../components/PromptCard.astro";
 import { getCollection } from "astro:content";
 
 const allPrompts = await getCollection("prompts", ({ data }) => data.visibility === "public");
 const recentPrompts = allPrompts
-	.sort((a, b) => new Date(b.data.updated_at).getTime() - new Date(a.data.updated_at).getTime())
-	.slice(0, 5);
+  .sort((a, b) => new Date(b.data.updated_at).getTime() - new Date(a.data.updated_at).getTime())
+  .slice(0, 5);
 ---
 
 <Layout
-	title="My Prompt Library"
-	description="A curated, Git-native library of structured prompts for sovereign AI workflows."
+  title="My Prompt Library"
+  description="A curated, Git-native library of structured prompts for sovereign AI workflows."
 >
-	<section class="hero">
-		<h1>My Prompt Library</h1>
-		<p class="lead">
-			Curated, high-quality prompts. Markdown, version-controlled, portable. No lock-in.
-		</p>
-		<p>
-			<a href="/prompts/" class="cta">Browse prompts</a>
-		</p>
-	</section>
+  <section class="mb-12">
+    <h1 class="text-3xl font-bold tracking-tight text-[var(--color-foreground)] sm:text-4xl">
+      My Prompt Library
+    </h1>
+    <p class="mt-3 max-w-xl text-lg text-[var(--color-muted)]">
+      Curated, high-quality prompts. Markdown, version-controlled, portable. No lock-in.
+    </p>
+    <p class="mt-6">
+      <a
+        href="/prompts/"
+        class="inline-flex items-center rounded-lg bg-[var(--color-accent)] px-4 py-2.5 text-sm font-medium text-white no-underline transition-opacity hover:opacity-90 focus-visible:opacity-90"
+      >
+        Browse prompts
+      </a>
+    </p>
+  </section>
 
-	{recentPrompts.length > 0 && (
-		<section class="recent" aria-labelledby="recent-heading">
-			<h2 id="recent-heading">Recent prompts</h2>
-			<ul class="prompt-list">
-				{recentPrompts.map((entry) => (
-					<li>
-						<a href={`/prompts/${entry.id}/`}>
-							<span class="prompt-title">{entry.data.title}</span>
-							{entry.data.summary && (
-								<span class="prompt-summary">{entry.data.summary}</span>
-							)}
-							<span class="prompt-meta">
-								{entry.data.tags.slice(0, 3).join(", ")}
-								{entry.data.tags.length > 3 && ` +${entry.data.tags.length - 3}`}
-							</span>
-						</a>
-					</li>
-				))}
-			</ul>
-			<p>
-				<a href="/prompts/">View all prompts</a>
-			</p>
-		</section>
-	)}
+  {recentPrompts.length > 0 && (
+    <section aria-labelledby="recent-heading">
+      <h2 id="recent-heading" class="mb-4 text-lg font-semibold text-[var(--color-foreground)]">
+        Recent prompts
+      </h2>
+      <ul class="list-none space-y-3 p-0">
+        {recentPrompts.map((entry) => (
+          <li>
+            <PromptCard entry={entry} />
+          </li>
+        ))}
+      </ul>
+      <p class="mt-4">
+        <a
+          href="/prompts/"
+          class="text-sm text-[var(--color-accent)] no-underline hover:underline focus-visible:underline"
+        >
+          View all prompts →
+        </a>
+      </p>
+    </section>
+  )}
 </Layout>
-
-<style>
-	.hero {
-		margin-bottom: 2.5rem;
-	}
-
-	.hero h1 {
-		font-size: 1.75rem;
-		margin: 0 0 0.75rem;
-	}
-
-	.lead {
-		font-size: 1.125rem;
-		color: var(--color-text-muted);
-		margin: 0 0 1.5rem;
-		max-width: 36rem;
-	}
-
-	.cta {
-		display: inline-block;
-		padding: 0.5rem 1rem;
-		background: var(--color-accent);
-		color: white;
-		text-decoration: none;
-		border-radius: 0.375rem;
-		font-weight: 500;
-	}
-
-	.cta:hover,
-	.cta:focus-visible {
-		background: var(--color-accent-hover);
-		outline: 2px solid var(--color-accent-hover);
-		outline-offset: 2px;
-	}
-
-	.recent h2 {
-		font-size: 1.25rem;
-		margin: 0 0 1rem;
-	}
-
-	.prompt-list {
-		list-style: none;
-		margin: 0 0 1rem;
-		padding: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-	}
-
-	.prompt-list li a {
-		display: block;
-		padding: 1rem;
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: 0.375rem;
-		text-decoration: none;
-		color: inherit;
-	}
-
-	.prompt-list li a:hover,
-	.prompt-list li a:focus-visible {
-		border-color: var(--color-accent);
-		outline: none;
-	}
-
-	.prompt-title {
-		display: block;
-		font-weight: 600;
-		margin-bottom: 0.25rem;
-	}
-
-	.prompt-summary {
-		display: block;
-		font-size: 0.875rem;
-		color: var(--color-text-muted);
-		margin-bottom: 0.5rem;
-	}
-
-	.prompt-meta {
-		font-size: 0.75rem;
-		color: var(--color-text-muted);
-	}
-
-	.recent a[href="/prompts/"] {
-		color: var(--color-accent);
-		text-decoration: none;
-	}
-
-	.recent a[href="/prompts/"]:hover,
-	.recent a[href="/prompts/"]:focus-visible {
-		text-decoration: underline;
-	}
-</style>

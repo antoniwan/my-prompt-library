@@ -1,349 +1,209 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import PageHeader from "../../components/PageHeader.astro";
 import { getCollection } from "astro:content";
 
 const prompts = await getCollection("prompts", ({ data }) => data.visibility === "public");
 const searchIndex = prompts.map((entry) => ({
-	id: entry.id,
-	title: entry.data.title,
-	tags: entry.data.tags,
-	summary: entry.data.summary || "",
-	difficulty: entry.data.difficulty,
-	author: entry.data.author,
-	bodyExcerpt: typeof entry.body === "string" ? entry.body.slice(0, 800) : "",
+  id: entry.id,
+  title: entry.data.title,
+  tags: entry.data.tags,
+  summary: entry.data.summary || "",
+  difficulty: entry.data.difficulty,
+  author: entry.data.author,
+  bodyExcerpt: typeof entry.body === "string" ? entry.body.slice(0, 800) : "",
 }));
 
 const tagSet = new Set<string>();
 const authorSet = new Set<string>();
 for (const entry of prompts) {
-	entry.data.tags.forEach((t: string) => tagSet.add(t));
-	authorSet.add(entry.data.author);
+  entry.data.tags.forEach((t: string) => tagSet.add(t));
+  authorSet.add(entry.data.author);
 }
 const filterOptions = {
-	tags: Array.from(tagSet).sort((a, b) => a.localeCompare(b)),
-	difficulties: ["beginner", "intermediate", "advanced"] as const,
-	authors: Array.from(authorSet).sort((a, b) => a.localeCompare(b)),
+  tags: Array.from(tagSet).sort((a, b) => a.localeCompare(b)),
+  difficulties: ["beginner", "intermediate", "advanced"] as const,
+  authors: Array.from(authorSet).sort((a, b) => a.localeCompare(b)),
 };
 ---
 
 <Layout
-	title="Search — My Prompt Library"
-	description="Search prompts by keyword, tag, difficulty, or author."
+  title="Search — My Prompt Library"
+  description="Search prompts by keyword, tag, difficulty, or author."
 >
-	<header class="page-header">
-		<h1>Search</h1>
-		<p class="lead">Search by keyword, tag, difficulty, or author.</p>
-	</header>
+  <PageHeader
+    title="Search"
+    description="Search by keyword, tag, difficulty, or author."
+  />
 
-	<form class="search-form" role="search" aria-label="Search prompts">
-		<div class="search-row">
-			<label for="search-input" class="visually-hidden">Search prompts</label>
-			<input
-				id="search-input"
-				type="search"
-				class="search-input"
-				placeholder="Type to search…"
-				autocomplete="off"
-				aria-describedby="search-results-label"
-			/>
-		</div>
-		<div class="search-filters" aria-label="Filter results">
-			<label for="filter-difficulty">Difficulty</label>
-			<select id="filter-difficulty" class="filter-select" aria-label="Filter by difficulty">
-				<option value="">All</option>
-				{filterOptions.difficulties.map((d) => (
-					<option value={d}>{d}</option>
-				))}
-			</select>
-			<label for="filter-author">Author</label>
-			<select id="filter-author" class="filter-select" aria-label="Filter by author">
-				<option value="">All</option>
-				{filterOptions.authors.map((a) => (
-					<option value={a}>{a}</option>
-				))}
-			</select>
-			<label for="filter-tag">Tag</label>
-			<select id="filter-tag" class="filter-select" aria-label="Filter by tag">
-				<option value="">All</option>
-				{filterOptions.tags.map((t) => (
-					<option value={t}>{t}</option>
-				))}
-			</select>
-		</div>
-		<div id="search-results-label" class="visually-hidden" aria-live="polite">
-			Search results update as you type.
-		</div>
-	</form>
+  <form class="mb-8" role="search" aria-label="Search prompts">
+    <div class="mb-4">
+      <label for="search-input" class="visually-hidden">Search prompts</label>
+      <input
+        id="search-input"
+        type="search"
+        class="w-full max-w-md rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-[var(--color-foreground)] placeholder:text-[var(--color-muted)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/20"
+        placeholder="Type to search…"
+        autocomplete="off"
+        aria-describedby="search-results-label"
+      />
+    </div>
+    <div class="flex flex-wrap items-center gap-3" aria-label="Filter results">
+      <label for="filter-difficulty" class="text-sm text-[var(--color-muted)]">Difficulty</label>
+      <select
+        id="filter-difficulty"
+        class="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)]"
+        aria-label="Filter by difficulty"
+      >
+        <option value="">All</option>
+        {filterOptions.difficulties.map((d) => (
+          <option value={d}>{d}</option>
+        ))}
+      </select>
+      <label for="filter-author" class="text-sm text-[var(--color-muted)]">Author</label>
+      <select
+        id="filter-author"
+        class="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)]"
+        aria-label="Filter by author"
+      >
+        <option value="">All</option>
+        {filterOptions.authors.map((a) => (
+          <option value={a}>{a}</option>
+        ))}
+      </select>
+      <label for="filter-tag" class="text-sm text-[var(--color-muted)]">Tag</label>
+      <select
+        id="filter-tag"
+        class="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)]"
+        aria-label="Filter by tag"
+      >
+        <option value="">All</option>
+        {filterOptions.tags.map((t) => (
+          <option value={t}>{t}</option>
+        ))}
+      </select>
+    </div>
+    <p id="search-results-label" class="visually-hidden" aria-live="polite">
+      Search results update as you type.
+    </p>
+  </form>
 
-	<div id="search-results" class="search-results" aria-label="Search results">
-		<p id="search-initial" class="search-state">Type above to search.</p>
-		<div id="search-list" class="search-list" hidden></div>
-		<p id="search-empty" class="search-state" hidden>No prompts match your search.</p>
-		<p id="search-error" class="search-state search-error" hidden>Search failed to load.</p>
-	</div>
+  <div id="search-results" aria-label="Search results">
+    <p id="search-initial" class="text-sm text-[var(--color-muted)]">Type above to search.</p>
+    <div id="search-list" class="mt-4 hidden space-y-3"></div>
+    <p id="search-empty" class="hidden text-sm text-[var(--color-muted)]">
+      No prompts match your search.
+    </p>
+    <p id="search-error" class="hidden text-sm text-[var(--color-error)]">Search failed to load.</p>
+  </div>
 </Layout>
 
 <script define:vars={{ searchIndex }}>
-	import Fuse from "fuse.js";
+  import Fuse from "fuse.js";
 
-	const form = document.querySelector(".search-form");
-	const input = document.getElementById("search-input");
-	const filterDifficulty = document.getElementById("filter-difficulty");
-	const filterAuthor = document.getElementById("filter-author");
-	const filterTag = document.getElementById("filter-tag");
-	const initialEl = document.getElementById("search-initial");
-	const listEl = document.getElementById("search-list");
-	const emptyEl = document.getElementById("search-empty");
-	const errorEl = document.getElementById("search-error");
+  const form = document.querySelector("form");
+  const input = document.getElementById("search-input");
+  const filterDifficulty = document.getElementById("filter-difficulty");
+  const filterAuthor = document.getElementById("filter-author");
+  const filterTag = document.getElementById("filter-tag");
+  const initialEl = document.getElementById("search-initial");
+  const listEl = document.getElementById("search-list");
+  const emptyEl = document.getElementById("search-empty");
+  const errorEl = document.getElementById("search-error");
 
-	if (!input || !listEl || !initialEl || !emptyEl) return;
+  if (!input || !listEl || !initialEl || !emptyEl) throw new Error("Missing elements");
 
-	form?.addEventListener("submit", (e) => e.preventDefault());
+  form?.addEventListener("submit", (e) => e.preventDefault());
 
-	const fullIndex = Array.isArray(searchIndex) ? searchIndex : [];
-	const fuse = new Fuse(fullIndex, {
-		keys: [
-			{ name: "title", weight: 0.4 },
-			{ name: "summary", weight: 0.3 },
-			{ name: "bodyExcerpt", weight: 0.2 },
-			{ name: "tags", weight: 0.15 },
-			{ name: "author", weight: 0.05 },
-			{ name: "difficulty", weight: 0.05 },
-		],
-		threshold: 0.3,
-		includeScore: true,
-	});
+  const fullIndex = Array.isArray(searchIndex) ? searchIndex : [];
+  const fuse = new Fuse(fullIndex, {
+    keys: [
+      { name: "title", weight: 0.4 },
+      { name: "summary", weight: 0.3 },
+      { name: "bodyExcerpt", weight: 0.2 },
+      { name: "tags", weight: 0.15 },
+      { name: "author", weight: 0.05 },
+      { name: "difficulty", weight: 0.05 },
+    ],
+    threshold: 0.3,
+    includeScore: true,
+  });
 
-	function getFilteredIndex() {
-		const difficulty = filterDifficulty?.value ?? "";
-		const author = filterAuthor?.value ?? "";
-		const tag = filterTag?.value ?? "";
-		if (!difficulty && !author && !tag) return fullIndex;
-		return fullIndex.filter((item) => {
-			if (difficulty && item.difficulty !== difficulty) return false;
-			if (author && item.author !== author) return false;
-			if (tag && !item.tags.includes(tag)) return false;
-			return true;
-		});
-	}
+  function getFilteredIndex() {
+    const difficulty = filterDifficulty?.value ?? "";
+    const author = filterAuthor?.value ?? "";
+    const tag = filterTag?.value ?? "";
+    if (!difficulty && !author && !tag) return fullIndex;
+    return fullIndex.filter((item) => {
+      if (difficulty && item.difficulty !== difficulty) return false;
+      if (author && item.author !== author) return false;
+      if (tag && !item.tags.includes(tag)) return false;
+      return true;
+    });
+  }
 
-	function runSearch() {
-		const q = input.value.trim();
-		const filtered = getFilteredIndex();
-		const hasFilters = !!(filterDifficulty?.value || filterAuthor?.value || filterTag?.value);
-		if (q.length === 0) {
-			if (filtered.length === 0) {
-				listEl.hidden = true;
-				listEl.innerHTML = "";
-				initialEl.hidden = true;
-				emptyEl.hidden = false;
-				return;
-			}
-			if (!hasFilters) {
-				listEl.hidden = true;
-				listEl.innerHTML = "";
-				initialEl.hidden = false;
-				emptyEl.hidden = true;
-				return;
-			}
-			// No query but filters active: show filtered list (up to 25)
-			const slice = filtered.slice(0, 25).map((item) => ({ item, score: 0 }));
-			renderResults(slice);
-			return;
-		}
-		const searchFuse = new Fuse(filtered, fuse.config);
-		const results = searchFuse.search(q).slice(0, 25);
-		renderResults(results);
-	}
+  function runSearch() {
+    const q = input.value.trim();
+    const filtered = getFilteredIndex();
+    const hasFilters = !!(filterDifficulty?.value || filterAuthor?.value || filterTag?.value);
+    listEl.classList.add("hidden");
+    listEl.innerHTML = "";
+    initialEl.classList.add("hidden");
+    emptyEl.classList.add("hidden");
+    errorEl.classList.add("hidden");
 
-	function renderResults(results) {
-		listEl.innerHTML = "";
-		listEl.hidden = true;
-		initialEl.hidden = true;
-		emptyEl.hidden = true;
-		errorEl.hidden = true;
+    if (q.length === 0) {
+      if (filtered.length === 0) {
+        emptyEl.classList.remove("hidden");
+        return;
+      }
+      if (!hasFilters) {
+        initialEl.classList.remove("hidden");
+        return;
+      }
+      const slice = filtered.slice(0, 25).map((item) => ({ item, score: 0 }));
+      renderResults(slice);
+      return;
+    }
+    const searchFuse = new Fuse(filtered, fuse.config);
+    const results = searchFuse.search(q).slice(0, 25);
+    renderResults(results);
+  }
 
-		if (results.length === 0) {
-			emptyEl.hidden = false;
-			return;
-		}
+  function renderResults(results) {
+    if (results.length === 0) {
+      emptyEl.classList.remove("hidden");
+      return;
+    }
+    listEl.classList.remove("hidden");
+    const ul = document.createElement("ul");
+    ul.className = "list-none space-y-3 p-0";
+    ul.setAttribute("aria-label", "Search results");
+    for (const { item } of results) {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = `/prompts/${item.id}/`;
+      a.className =
+        "block rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 no-underline text-[var(--color-foreground)] hover:border-[var(--color-accent)]";
+      a.innerHTML = `
+        <span class="font-semibold">${escapeHtml(item.title)}</span>
+        ${item.summary ? `<span class="mt-1 block text-sm text-[var(--color-muted)]">${escapeHtml(item.summary)}</span>` : ""}
+        <span class="mt-2 block text-xs text-[var(--color-muted)]">${escapeHtml(item.tags.join(", "))} · ${escapeHtml(item.difficulty)}</span>
+      `;
+      li.appendChild(a);
+      ul.appendChild(li);
+    }
+    listEl.appendChild(ul);
+  }
 
-		listEl.hidden = false;
-		const ul = document.createElement("ul");
-		ul.className = "result-list";
-		ul.setAttribute("aria-label", "Search results");
-		for (const { item } of results) {
-			const li = document.createElement("li");
-			const a = document.createElement("a");
-			a.href = `/prompts/${item.id}/`;
-			a.className = "result-card";
-			a.innerHTML = `
-				<span class="result-title">${escapeHtml(item.title)}</span>
-				${item.summary ? `<span class="result-summary">${escapeHtml(item.summary)}</span>` : ""}
-				<span class="result-meta">${escapeHtml(item.tags.join(", "))} · ${escapeHtml(item.difficulty)}</span>
-			`;
-			li.appendChild(a);
-			ul.appendChild(li);
-		}
-		listEl.appendChild(ul);
-	}
+  function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
 
-	function escapeHtml(text) {
-		const div = document.createElement("div");
-		div.textContent = text;
-		return div.innerHTML;
-	}
-
-	input.addEventListener("input", runSearch);
-	filterDifficulty?.addEventListener("change", runSearch);
-	filterAuthor?.addEventListener("change", runSearch);
-	filterTag?.addEventListener("change", runSearch);
-
-	input.addEventListener("focus", () => {
-		if (listEl.children.length > 0) {
-			listEl.hidden = false;
-		}
-	});
+  input.addEventListener("input", runSearch);
+  filterDifficulty?.addEventListener("change", runSearch);
+  filterAuthor?.addEventListener("change", runSearch);
+  filterTag?.addEventListener("change", runSearch);
 </script>
-
-<style>
-	.page-header {
-		margin-bottom: 1.5rem;
-	}
-
-	.page-header h1 {
-		font-size: 1.5rem;
-		margin: 0 0 0.5rem;
-	}
-
-	.lead {
-		color: var(--color-text-muted);
-		margin: 0;
-		font-size: 0.9375rem;
-	}
-
-	.search-form {
-		margin-bottom: 1.5rem;
-	}
-
-	.search-row {
-		margin-bottom: 0.75rem;
-	}
-
-	.search-filters {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: 0.5rem 1rem;
-	}
-
-	.search-filters label {
-		font-size: 0.875rem;
-		color: var(--color-text-muted);
-	}
-
-	.filter-select {
-		padding: 0.375rem 0.5rem;
-		font-size: 0.875rem;
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: 0.25rem;
-		color: var(--color-text);
-	}
-
-	.filter-select:focus {
-		outline: 2px solid var(--color-accent);
-		outline-offset: 1px;
-		border-color: var(--color-accent);
-	}
-
-	.search-input {
-		width: 100%;
-		max-width: 28rem;
-		padding: 0.625rem 1rem;
-		font-size: 1rem;
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: 0.375rem;
-		color: var(--color-text);
-	}
-
-	.search-input::placeholder {
-		color: var(--color-text-muted);
-	}
-
-	.search-input:focus {
-		outline: 2px solid var(--color-accent);
-		outline-offset: 2px;
-		border-color: var(--color-accent);
-	}
-
-	.search-results {
-		min-height: 6rem;
-	}
-
-	.search-state {
-		color: var(--color-text-muted);
-		font-size: 0.9375rem;
-		margin: 0;
-	}
-
-	.search-error {
-		color: #f87171;
-	}
-
-	.result-list {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-	}
-
-	.result-card {
-		display: block;
-		padding: 1rem;
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: 0.375rem;
-		text-decoration: none;
-		color: inherit;
-	}
-
-	.result-card:hover,
-	.result-card:focus-visible {
-		border-color: var(--color-accent);
-		outline: none;
-	}
-
-	.result-title {
-		display: block;
-		font-weight: 600;
-		margin-bottom: 0.25rem;
-	}
-
-	.result-summary {
-		display: block;
-		font-size: 0.875rem;
-		color: var(--color-text-muted);
-		margin-bottom: 0.25rem;
-	}
-
-	.result-meta {
-		font-size: 0.75rem;
-		color: var(--color-text-muted);
-	}
-
-	.visually-hidden {
-		position: absolute;
-		width: 1px;
-		height: 1px;
-		padding: 0;
-		margin: -1px;
-		overflow: hidden;
-		clip: rect(0, 0, 0, 0);
-		white-space: nowrap;
-		border: 0;
-	}
-</style>
