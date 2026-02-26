@@ -41,29 +41,12 @@ Deploy the `dist/` folder to Vercel, Netlify, Cloudflare Pages, or any other sta
 ## Project structure
 
 - `content/prompts/` — Markdown prompt files (frontmatter + body)
-- `imports/` — Source prompt files to be migrated into `content/prompts/`
 - `src/content.config.ts` — Content collection schema (Zod) for the `prompts` collection
 - `src/pages/` — Astro pages (`/`, `/prompts/`, `/prompts/[id]/`, `/tags/`, `/tags/[tag]/`, `/search/`)
 - `src/layouts/` — Shared layout, header, footer, and global styles wiring
 - `src/components/` — Reusable UI pieces (prompt card, tag pill, search bar, theme toggle, page header)
 - `src/styles/global.css` — Global design tokens and base styles
 - `AGENTS/` — Requirements, expectations, and specifications for AI agents working on this repo
-
-## Importing prompts
-
-If you have prompts elsewhere (for example in Obsidian, Notion, or plain Markdown files), add them to the `imports/` folder, then run:
-
-```bash
-npm run migrate
-```
-
-Optional flags:
-
-- `--author "Your Name"` — Default author when frontmatter has no `author`
-- `--enhance-tags` — Add tags from `#hashtags` in the body to frontmatter
-- `--dry-run` — Show what would be written without creating files
-
-Migrated files are written to `content/prompts/` with the required frontmatter. See `imports/README.md` for details.
 
 ## Contributing
 

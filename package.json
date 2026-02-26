@@ -1,17 +1,16 @@
 {
   "name": "my-prompt-library",
   "type": "module",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "author": {
     "name": "Antonio Rodriguez Martinez",
     "url": "https://github.com/antoniwan"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro",
-    "migrate": "node scripts/migrate-imports.mjs"
+  "dev": "astro dev",
+  "build": "astro build",
+  "preview": "astro preview",
+  "astro": "astro"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.1",
@@ -19,7 +18,5 @@
     "fuse.js": "^7.1.0",
     "tailwindcss": "^4.2.1"
   },
-  "devDependencies": {
-    "gray-matter": "^4.0.3"
-  }
+  "devDependencies": {}
 }

@@ -7,7 +7,7 @@
 
 ## Context & Stack Summary
 
-- **Primary languages**: TypeScript (config and some script blocks), JavaScript (migration script), Astro templates (`.astro`).
+- **Primary languages**: TypeScript (config and some script blocks), JavaScript (inline scripts), Astro templates (`.astro`).
 - **Framework / runtime**: Astro 5.x (static-first SSG on Node), Vite bundler (via Astro).
 - **Build tooling**: `astro dev/build/preview` plus Vite; Tailwind 4 via `@tailwindcss/vite`.
 - **Package manager**: npm-compatible scripts; repository docs prefer `pnpm` (`pnpm run dev/build/migrate`).
@@ -39,12 +39,10 @@ Targeted changes in these areas will improve maintainability and performance wit
 ### 2.1 Folder and module structure
 
 - `content/prompts/`: Markdown prompt files with strict frontmatter. Source of truth for prompts.
-- `imports/`: Staging area for external prompt markdown; migrated into `content/prompts/` via a script.
 - `src/content.config.ts`: Astro Content Collection schema (Zod) for `prompts`.
 - `src/pages/`: Astro pages (`/`, `/prompts/`, `/prompts/[id]/`, `/tags/`, `/tags/[tag]/`, `/search/`, `/404/`).
 - `src/layouts/`: Shared `Layout.astro` (shell: header, footer, theme, search).
 - `src/components/`: Shared UI pieces (`PromptCard`, `TagPill`, `SearchBar`, `ThemeToggle`, `PageHeader`).
-- `scripts/migrate-imports.mjs`: CLI tool to convert `imports/` markdown into schema-compliant content.
 - `AGENTS/`: Requirements, specifications, expectations, TODO/AUDIT docs for AI agents and maintainers.
 
 The structure is clear and aligned with Astro conventions. Pages are thin, and reusable concerns are factored into components and a shared layout.
@@ -91,8 +89,7 @@ From `package.json`:
   - `tailwindcss`: design system and utility classes (used in `global.css` via `@import "tailwindcss";`).
   - `@tailwindcss/vite`: Tailwind 4 plugin integrated into Vite (configured in `astro.config.mjs`).
   - `fuse.js`: **unused** (no imports in `src/` or scripts).
-- **devDependencies**
-  - `gray-matter`: used in `scripts/migrate-imports.mjs` to parse frontmatter (correctly scoped as dev-only).
+-- **devDependencies**: none.
 
 ### 3.2 Findings
 
@@ -167,7 +164,6 @@ From `package.json`:
 
 - `tsconfig.json` extends `astro/tsconfigs/strict`, which is good.
 - Many inline scripts in `.astro` files are **not typed** or are loosely typed, especially in `SearchBar.astro` and `search/index.astro`.
-- The migration script (`scripts/migrate-imports.mjs`) is untyped JS.
 
 ### 5.3 Error handling, logging, observability
 
@@ -280,9 +276,8 @@ From `package.json`:
 
 ## 10. Refactoring Roadmap (Ordered by Architectural Leverage)
 
-1. **Align content schema, migration script, and documentation**
-   - Add or remove fields like `use_count` consistently across `content.config.ts`, `migrate-imports.mjs`, and `imports/README.md`.
-   - Update AGENTS docs accordingly.
+1. **Align content schema and documentation**
+- Add or remove fields like `use_count` consistently across `content.config.ts` and contributor-facing docs.
 
 2. **Remove `fuse.js` and update AGENTS references**
    - Clarify that search is implemented via a custom index and scoring.

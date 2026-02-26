@@ -14,7 +14,7 @@ Thank you for your interest in contributing. This project is a curated prompt li
    - `difficulty`: `beginner` | `intermediate` | `advanced`
    - `visibility`: `public` or `draft`
    - `created_at`, `updated_at` (YYYY-MM-DD strings)
-   - Optional: `summary`, `models_tested`, `quality_score`, `use_count`
+   - Optional: `summary`, `models_tested`, `quality_score`
 4. **Structure the body** with sections such as: Context, Length, Examples, Prompt.
 5. **Open a Pull Request** with a short description of your prompt.
 6. A **maintainer will review** your submission. Prompts may be edited for clarity and structure; author attribution is preserved in frontmatter.

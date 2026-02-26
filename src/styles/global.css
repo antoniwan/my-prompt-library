@@ -6,13 +6,13 @@
   --font-sans: "Geist", "Geist Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", "Geist Mono Variable", ui-monospace, monospace;
 
-  /* Neutrals (higher-contrast dark) */
-  --color-background: #020617;
-  --color-foreground: #f9fafb;
-  --color-muted: #d4d4d8;
-  --color-border: #1f2937;
-  --color-surface: #020617;
-  --color-surface-hover: #111827;
+  /* Neutrals (dark theme: lighter bg, whiter text) */
+  --color-background: #0f172a;
+  --color-foreground: #ffffff;
+  --color-muted: #e2e8f0;
+  --color-border: #334155;
+  --color-surface: #0f172a;
+  --color-surface-hover: #1e293b;
   --color-accent: #0070f3;
   --color-accent-hover: #0060df;
   --color-accent-subtle: rgba(0, 112, 243, 0.08);
