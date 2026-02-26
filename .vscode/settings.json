@@ -1,0 +1,14 @@
+{
+  // Project identity: teal toolbar so you can spot "my-prompt-library" among other windows.
+  // If the title bar color doesn’t apply, set "window.titleBarStyle": "custom" once in User settings.
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#0F766E",
+    "titleBar.activeForeground": "#F0FDFA",
+    "titleBar.inactiveBackground": "#134E4A",
+    "titleBar.inactiveForeground": "#99A3A2",
+    "activityBar.background": "#0F766E",
+    "activityBar.foreground": "#F0FDFA",
+    "statusBar.background": "#134E4A",
+    "statusBar.foreground": "#F0FDFA"
+  }
+}
