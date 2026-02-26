@@ -276,8 +276,8 @@ From `package.json`:
 
 ## 10. Refactoring Roadmap (Ordered by Architectural Leverage)
 
-1. **Align content schema and documentation**
-- Add or remove fields like `use_count` consistently across `content.config.ts` and contributor-facing docs.
+1. **Align content schema and documentation** ✓ *Done*
+   - Add or remove fields like `use_count` consistently across `content.config.ts` and contributor-facing docs. *Canonical reference added in `PROMPT-SCHEMA.md`; README and CONTRIBUTING updated to match schema (visibility default, quality_score 0–5, models_tested type); schema comment added in `content.config.ts`.*
 
 2. **Remove `fuse.js` and update AGENTS references** ✓ *Done*
    - Clarify that search is implemented via a custom index and scoring. *`fuse.js` removed from dependencies; search remains custom (no Fuse).*

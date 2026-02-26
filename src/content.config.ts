@@ -1,6 +1,7 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
+/** Prompt frontmatter schema. Keep in sync with PROMPT-SCHEMA.md and contributor docs (README, CONTRIBUTING). */
 const prompts = defineCollection({
 	loader: glob({ pattern: "**/*.md", base: "./content/prompts" }),
 	schema: z.object({

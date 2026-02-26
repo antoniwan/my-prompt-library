@@ -35,7 +35,7 @@ Open **[http://localhost:4321](http://localhost:4321)**. You should see the home
 | Path                    | Purpose                                                                                          |
 | ----------------------- | ------------------------------------------------------------------------------------------------ |
 | `content/prompts/`      | Prompt Markdown files. Filename (without `.md`) = URL slug.                                      |
-| `src/content.config.ts` | Content collection schema (Zod). Defines required frontmatter and validation.                    |
+| `src/content.config.ts` | Content collection schema (Zod). Defines required frontmatter and validation. See also `PROMPT-SCHEMA.md`. |
 | `src/pages/`            | Astro routes: `/`, `/prompts/`, `/prompts/[id]/`, `/tags/`, `/tags/[tag]/`, `/search/`, `/404`.  |
 | `src/layouts/`          | Shared layout (header, footer, theme, search).                                                   |
 | `src/components/`       | Reusable UI: `PromptCard`, `TagPill`, `SearchBar`, `ThemeToggle`, `PageHeader`, `ButtonPrimary`. |
@@ -48,7 +48,7 @@ Open **[http://localhost:4321](http://localhost:4321)**. You should see the home
 **Add a prompt**
 
 1. Add a new `.md` file under `content/prompts/`. Use the filename as the slug (e.g. `my-prompt-name.md` → slug `my-prompt-name`).
-2. Include required frontmatter (see `src/content.config.ts`): `title`, `slug`, `tags` (array), `author`, `difficulty` (`beginner`  `intermediate`  `advanced`), `visibility` (`public`  `draft`), `created_at`, `updated_at` (YYYY-MM-DD). Optional: `summary`, `models_tested`, `quality_score`.
+2. Include required frontmatter (canonical reference: `PROMPT-SCHEMA.md` and `src/content.config.ts`): `title`, `slug`, `tags` (array), `author`, `difficulty` (`beginner` | `intermediate` | `advanced`), `visibility` (`public` | `draft`, default `public`), `created_at`, `updated_at` (YYYY-MM-DD). Optional: `summary`, `models_tested` (array of strings), `quality_score` (number 0–5).
 3. Run `npm run dev` and open `/prompts/` or the new `/prompts/<slug>/` to confirm it appears. Only `visibility: public` entries are shown on the site.
 
 **Modify behavior or UI**
