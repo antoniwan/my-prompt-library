@@ -8,6 +8,15 @@ tags:
   - reflection
   - workflows
   - export
+  - note-processing
+  - writing
+  - editorial
+  - second-brain
+  - llm-agnostic
+  - chat-gpt
+  - claude
+  - gemini
+  - deepseek
 author: Antonio Rodriguez Martinez
 difficulty: beginner
 visibility: public

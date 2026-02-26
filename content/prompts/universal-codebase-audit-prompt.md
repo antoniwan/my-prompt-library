@@ -8,6 +8,16 @@ tags:
   - refactoring
   - technical-debt
   - maintainability
+  - code-review
+  - repository-audit
+  - performance
+  - security
+  - scalability
+  - llm-agnostic
+  - chat-gpt
+  - claude
+  - gemini
+  - deepseek
 author: Antonio Rodriguez Martinez
 difficulty: advanced
 visibility: public

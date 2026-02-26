@@ -8,6 +8,14 @@ tags:
   - knowledge-management
   - reflection
   - workflows
+  - note-processing
+  - zettelkasten
+  - second-brain
+  - llm-agnostic
+  - chat-gpt
+  - claude
+  - gemini
+  - deepseek
 author: Antonio Rodriguez Martinez
 difficulty: beginner
 visibility: public

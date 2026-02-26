@@ -2,6 +2,10 @@
   "name": "my-prompt-library",
   "type": "module",
   "version": "0.4.0",
+  "author": {
+    "name": "Antonio Rodriguez Martinez",
+    "url": "https://github.com/antoniwan"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

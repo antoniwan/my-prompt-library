@@ -8,7 +8,14 @@ tags:
   - accessibility
   - css
   - ux
-  - non-invasive
+  - dark-mode
+  - theme-toggle
+  - production
+  - llm-agnostic
+  - chat-gpt
+  - claude
+  - gemini
+  - deepseek
 author: Antonio Rodriguez Martinez
 difficulty: intermediate
 visibility: public
