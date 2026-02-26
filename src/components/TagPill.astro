@@ -1,11 +1,13 @@
 ---
+import { tagDetail } from "../utils/urls";
+
 interface Props {
   tag: string;
   count?: number;
   href?: string;
 }
 
-const { tag, count, href = `/tags/${encodeURIComponent(tag)}/` } = Astro.props;
+const { tag, count, href = tagDetail(tag) } = Astro.props;
 ---
 
 <a

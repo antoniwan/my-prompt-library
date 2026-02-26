@@ -3,6 +3,7 @@
  * Served as /search-index.json. Keeps full index out of every page HTML.
  */
 import { getPublicPrompts, getTagCounts } from "../data/prompts";
+import { home, promptsIndex, tagsIndex, searchPage, promptDetail, tagDetail } from "../utils/urls";
 
 export const prerender = true;
 
@@ -12,28 +13,28 @@ const PAGE_ENTRIES = [
     id: "home",
     title: "Home",
     description: "Overview of My Prompt Library",
-    url: "/",
+    url: home(),
   },
   {
     type: "page" as const,
     id: "prompts",
     title: "Prompts",
     description: "Browse all prompts",
-    url: "/prompts/",
+    url: promptsIndex(),
   },
   {
     type: "page" as const,
     id: "tags",
     title: "Tags",
     description: "Browse all tags",
-    url: "/tags/",
+    url: tagsIndex(),
   },
   {
     type: "page" as const,
     id: "search",
     title: "Search",
     description: "Full-page search interface",
-    url: "/search/",
+    url: searchPage(),
   },
 ];
 
@@ -44,7 +45,7 @@ export async function GET() {
     id: entry.id,
     title: entry.data.title,
     description: (entry.data.summary || "").slice(0, 200),
-    url: `/prompts/${entry.id}/`,
+    url: promptDetail(entry.id),
     tags: entry.data.tags,
     difficulty: entry.data.difficulty,
     author: entry.data.author,
@@ -56,7 +57,7 @@ export async function GET() {
     id: tag,
     title: tag,
     description: `${count} prompt${count === 1 ? "" : "s"} tagged "${tag}"`,
-    url: `/tags/${encodeURIComponent(tag)}/`,
+    url: tagDetail(tag),
     count,
   }));
 

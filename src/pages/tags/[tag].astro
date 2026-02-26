@@ -3,6 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import PageHeader from "../../components/PageHeader.astro";
 import PromptCard from "../../components/PromptCard.astro";
 import { getPublicPrompts, getUniqueTags } from "../../data/prompts";
+import { tagsIndex } from "../../utils/urls";
 
 export async function getStaticPaths() {
   const prompts = await getPublicPrompts();
@@ -21,7 +22,7 @@ const prompts = allPrompts.filter((entry) => entry.data.tags.includes(tag));
 <Layout title={`${tag} — Tags — My Prompt Library`} description={`Prompts tagged with ${tag}.`}>
   <PageHeader title={`Tag: ${tag}`}>
     <p class="m-0">
-      <a href="/tags/" class="text-[var(--color-accent)] hover:underline">All tags</a>
+      <a href={tagsIndex()} class="text-[var(--color-accent)] hover:underline">All tags</a>
       {" · "}
       {prompts.length} prompt{prompts.length === 1 ? "" : "s"}
     </p>

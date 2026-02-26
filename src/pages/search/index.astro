@@ -7,6 +7,8 @@ import {
   getUniqueAuthors,
   DIFFICULTIES,
 } from "../../data/prompts";
+import { filterSelectClassesSearch } from "../../utils/classes";
+import { PROMPT_PATH_PREFIX, PROMPT_PATH_SUFFIX } from "../../utils/urls";
 
 const prompts = await getPublicPrompts();
 const searchIndex = prompts.map((entry) => ({
@@ -48,7 +50,7 @@ const filterOptions = {
       <label for="filter-difficulty" class="text-sm text-[var(--color-muted)]">Difficulty</label>
       <select
         id="filter-difficulty"
-        class="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)]"
+        class={filterSelectClassesSearch}
         aria-label="Filter by difficulty"
       >
         <option value="">All</option>
@@ -57,7 +59,7 @@ const filterOptions = {
       <label for="filter-author" class="text-sm text-[var(--color-muted)]">Author</label>
       <select
         id="filter-author"
-        class="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)]"
+        class={filterSelectClassesSearch}
         aria-label="Filter by author"
       >
         <option value="">All</option>
@@ -66,7 +68,7 @@ const filterOptions = {
       <label for="filter-tag" class="text-sm text-[var(--color-muted)]">Tag</label>
       <select
         id="filter-tag"
-        class="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)]"
+        class={filterSelectClassesSearch}
         aria-label="Filter by tag"
       >
         <option value="">All</option>
@@ -88,7 +90,7 @@ const filterOptions = {
   </div>
 </Layout>
 
-<script define:vars={{ searchIndex }}>
+<script define:vars={{ searchIndex, PROMPT_PATH_PREFIX, PROMPT_PATH_SUFFIX }}>
   if (typeof window !== "undefined") {
     function initSearch() {
       const form = document.querySelector('form[role="search"]');
@@ -173,7 +175,7 @@ const filterOptions = {
         for (const item of items) {
           const li = document.createElement("li");
           const a = document.createElement("a");
-          a.href = `/prompts/${item.id}/`;
+          a.href = PROMPT_PATH_PREFIX + item.id + PROMPT_PATH_SUFFIX;
           a.className =
             "block rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 no-underline text-[var(--color-foreground)] hover:border-[var(--color-accent)]";
           a.innerHTML = `

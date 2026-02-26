@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import PageHeader from "../components/PageHeader.astro";
 import ButtonPrimary from "../components/ButtonPrimary.astro";
+import { home, promptsIndex } from "../utils/urls";
 ---
 
 <Layout
@@ -16,9 +17,9 @@ import ButtonPrimary from "../components/ButtonPrimary.astro";
   </p>
 
   <div class="flex flex-wrap gap-3">
-    <ButtonPrimary href="/"> ← Back to home </ButtonPrimary>
+    <ButtonPrimary href={home()}> ← Back to home </ButtonPrimary>
     <a
-      href="/prompts/"
+      href={promptsIndex()}
       class="inline-flex items-center rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-sm font-medium text-[var(--color-foreground)] no-underline hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] focus-visible:border-[var(--color-accent)] focus-visible:text-[var(--color-accent)]"
     >
       Browse prompts

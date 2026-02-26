@@ -8,6 +8,8 @@ import {
   getUniqueAuthors,
   DIFFICULTIES,
 } from "../../data/prompts";
+import { promptsIndex } from "../../utils/urls";
+import { filterSelectClasses } from "../../utils/classes";
 
 const prompts = await getPublicPrompts();
 const tags = getUniqueTags(prompts);
@@ -32,7 +34,7 @@ const difficulties = DIFFICULTIES;
     </span>
     <form
       method="get"
-      action="/prompts/"
+      action={promptsIndex()}
       class="flex flex-wrap items-center gap-3"
       data-prompts-filter
     >
@@ -40,7 +42,7 @@ const difficulties = DIFFICULTIES;
       <select
         id="filter-difficulty"
         name="difficulty"
-        class="rounded-md border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-1.5 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)]"
+        class={filterSelectClasses}
         aria-label="Filter by difficulty"
       >
         <option value="">All difficulties</option>
@@ -50,7 +52,7 @@ const difficulties = DIFFICULTIES;
       <select
         id="filter-author"
         name="author"
-        class="rounded-md border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-1.5 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)]"
+        class={filterSelectClasses}
         aria-label="Filter by author"
       >
         <option value="">All authors</option>
@@ -60,7 +62,7 @@ const difficulties = DIFFICULTIES;
       <select
         id="filter-tag"
         name="tag"
-        class="rounded-md border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-1.5 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)]"
+        class={filterSelectClasses}
         aria-label="Filter by tag"
       >
         <option value="">All tags</option>

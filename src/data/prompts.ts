@@ -1,9 +1,7 @@
 import { getCollection, type CollectionEntry } from "astro:content";
+import { DIFFICULTIES, type Difficulty } from "../schema/prompt";
 
-/** Difficulty levels for prompts (matches content schema). */
-export const DIFFICULTIES = ["beginner", "intermediate", "advanced"] as const;
-
-export type Difficulty = (typeof DIFFICULTIES)[number];
+export { DIFFICULTIES, type Difficulty };
 
 /**
  * Returns all public prompts, sorted by `updated_at` descending (newest first).

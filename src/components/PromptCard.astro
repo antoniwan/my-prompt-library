@@ -1,6 +1,8 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import TagPill from "./TagPill.astro";
+import { promptDetail, promptsByDifficulty, promptsByAuthor } from "../utils/urls";
+import { mutedLinkClasses } from "../utils/classes";
 
 interface Props {
   entry: CollectionEntry<"prompts">;
@@ -15,7 +17,7 @@ const { entry, showTags = true } = Astro.props;
 >
   <h2 class="text-base font-semibold leading-snug sm:text-lg">
     <a
-      href={`/prompts/${entry.id}/`}
+      href={promptDetail(entry.id)}
       class="text-[var(--color-foreground)] no-underline hover:text-[var(--color-accent)] hover:underline focus-visible:text-[var(--color-accent)]"
     >
       {entry.data.title}
@@ -34,18 +36,12 @@ const { entry, showTags = true } = Astro.props;
   >
     <span>
       <span class="sr-only">Difficulty</span>
-      <a
-        href={`/prompts/?difficulty=${encodeURIComponent(entry.data.difficulty)}`}
-        class="text-[var(--color-muted)] hover:text-[var(--color-accent)] hover:underline focus-visible:text-[var(--color-accent)]"
-      >
+      <a href={promptsByDifficulty(entry.data.difficulty)} class={mutedLinkClasses}>
         {entry.data.difficulty}
       </a>
       <span aria-hidden="true"> · </span>
       <span class="sr-only">Author</span>
-      <a
-        href={`/prompts/?author=${encodeURIComponent(entry.data.author)}`}
-        class="text-[var(--color-muted)] hover:text-[var(--color-accent)] hover:underline focus-visible:text-[var(--color-accent)]"
-      >
+      <a href={promptsByAuthor(entry.data.author)} class={mutedLinkClasses}>
         {entry.data.author}
       </a>
     </span>

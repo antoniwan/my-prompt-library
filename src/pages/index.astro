@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import PromptCard from "../components/PromptCard.astro";
 import ButtonPrimary from "../components/ButtonPrimary.astro";
 import { getPublicPrompts } from "../data/prompts";
+import { promptsIndex } from "../utils/urls";
 
 const allPrompts = await getPublicPrompts();
 const recentPrompts = allPrompts.slice(0, 5);
@@ -21,7 +22,7 @@ const recentPrompts = allPrompts.slice(0, 5);
       tools. No lock-in.
     </p>
     <p class="mt-6">
-      <ButtonPrimary href="/prompts/"> Browse prompts </ButtonPrimary>
+      <ButtonPrimary href={promptsIndex()}> Browse prompts </ButtonPrimary>
     </p>
   </section>
 
@@ -40,7 +41,7 @@ const recentPrompts = allPrompts.slice(0, 5);
         </ul>
         <p class="mt-4">
           <a
-            href="/prompts/"
+            href={promptsIndex()}
             class="text-sm text-[var(--color-accent)] no-underline hover:underline focus-visible:underline"
           >
             View all prompts →

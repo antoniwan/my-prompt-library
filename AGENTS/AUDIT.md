@@ -284,8 +284,8 @@ From `package.json`:
   *Vitest added with Astro getViteConfig; prompt schema extracted to `src/schema/prompt.ts` and unit-tested; `src/data/prompts.ts` helpers (getUniqueTags, getUniqueAuthors, getTagCounts, DIFFICULTIES) covered by tests. GitHub Actions workflow `.github/workflows/ci.yml` runs on push/PR to main: install, lint, format:check, test, build. Migration script tests deferred to roadmap item 7.*
 7. **Set `site` in `astro.config.mjs`** ✓ *Done*
   - Improve SEO and consistency of structured data URLs. *`site` set from `process.env.SITE` with fallback `https://example.com`; canonical and og:url in Layout and prompt pages now resolve correctly when SITE is set in production.*
-8. **Deduplicate constants and utilities**
-  - Extract difficulties, URL helpers, and shared class names/variants where appropriate.
+8. **Deduplicate constants and utilities** ✓ *Done*
+   - Extract difficulties, URL helpers, and shared class names/variants where appropriate. *Single source for difficulties: `DIFFICULTIES` and `Difficulty` type live in `src/schema/prompt.ts`, re-exported from `src/data/prompts.ts`. Added `src/utils/urls.ts` with `promptsIndex()`, `promptDetail()`, `promptsByDifficulty()`, `promptsByAuthor()`, `tagsIndex()`, `tagDetail()`, `searchPage()`, `home()` and `PROMPT_PATH_PREFIX`/`PROMPT_PATH_SUFFIX` for client-side use. Added `src/utils/classes.ts` with `filterSelectClasses`, `filterSelectClassesSearch`, and `mutedLinkClasses`. All pages and components refactored to use URL helpers and shared class constants.*
 9. **Optional performance tweaks**
   - Optimize font loading (preload, `font-display`).
   - Refine service worker usage (either remove or implement minimal caching).

@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import SearchBar from "../components/SearchBar.astro";
+import { home, promptsIndex, tagsIndex, searchPage } from "../utils/urls";
 import pkg from "../../package.json";
 
 interface Props {
@@ -85,7 +86,7 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
     >
       <nav class="mx-auto flex w-full max-w-4xl items-center gap-6 px-4 sm:px-6" aria-label="Main">
         <a
-          href="/"
+          href={home()}
           class="shrink-0 text-lg font-semibold tracking-tight text-[var(--color-foreground)] no-underline hover:text-[var(--color-accent)] focus-visible:text-[var(--color-accent)]"
         >
           MPL
@@ -93,7 +94,7 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
         <ul class="flex shrink-0 list-none gap-4 p-0 sm:gap-6">
           <li>
             <a
-              href="/prompts/"
+              href={promptsIndex()}
               class="text-sm text-[var(--color-muted)] no-underline hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-accent)]"
             >
               Prompts
@@ -101,7 +102,7 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
           </li>
           <li>
             <a
-              href="/tags/"
+              href={tagsIndex()}
               class="text-sm text-[var(--color-muted)] no-underline hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-accent)]"
             >
               Tags
@@ -109,7 +110,7 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
           </li>
           <li>
             <a
-              href="/search/"
+              href={searchPage()}
               class="text-sm text-[var(--color-muted)] no-underline hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-accent)]"
             >
               Search
