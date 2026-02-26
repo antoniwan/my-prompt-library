@@ -1,7 +1,5 @@
 ---
-author: Antonio Rodriguez Martinez
-created_at: "2026-02-17"
-difficulty: intermediate
+title: Add Light/Dark Theme Support (Non-Invasive, Native, Stack-Agnostic)
 slug: add-light-dark-theme-support
 summary: Implement light/dark theme and a theme toggle in existing front-end codebases without changing styling paradigm or architecture.
 tags:
@@ -11,9 +9,14 @@ tags:
   - css
   - ux
   - non-invasive
-title: Add Light/Dark Theme Support (Non-Invasive, Native, Stack-Agnostic)
-updated_at: "2026-02-17"
+author: Antonio Rodriguez Martinez
+difficulty: intermediate
 visibility: public
+created_at: "2026-02-17"
+updated_at: "2026-02-17"
+models_tested: []
+quality_score: 0
+use_count: 0
 ---
 
 You are working inside an existing production front-end codebase. Your objective is to implement light/dark theme capability and create a theme toggle component, while strictly adhering to the principles below.
