@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import TagPill from "../../components/TagPill.astro";
 import { getCollection, getEntry, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -73,14 +74,14 @@ const structuredData = {
     </div>
 
     <div class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]" role="tablist" aria-label="Prompt view">
-      <div class="flex border-b border-[var(--color-border)]">
+      <div class="flex border-b border-[var(--color-border)] bg-[var(--color-surface)]">
         <button
           type="button"
           role="tab"
           id="tab-preview"
           aria-selected="true"
           aria-controls="panel-preview"
-          class="prompt-tab rounded-t-lg border-b-2 border-[var(--color-accent)] bg-transparent px-4 py-3 text-sm font-medium text-[var(--color-accent)]"
+          class="prompt-tab rounded-t-lg border-b border-[var(--color-accent-border)] bg-[var(--color-surface-hover)] px-3 py-2 text-xs sm:text-sm font-medium text-[var(--color-foreground)]"
         >
           Preview
         </button>
@@ -90,7 +91,7 @@ const structuredData = {
           id="tab-markdown"
           aria-selected="false"
           aria-controls="panel-markdown"
-          class="prompt-tab rounded-t-lg border-b-2 border-transparent bg-transparent px-4 py-3 text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-foreground)]"
+          class="prompt-tab rounded-t-lg border-b border-transparent bg-transparent px-3 py-2 text-xs sm:text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-foreground)]"
         >
           Markdown
         </button>
@@ -133,12 +134,7 @@ const structuredData = {
         <dt class="visually-hidden">Tags</dt>
         <dd class="col-span-2 mt-2 flex flex-wrap gap-1.5">
           {entry.data.tags.map((tag) => (
-            <a
-              href={`/tags/${encodeURIComponent(tag)}/`}
-              class="rounded-md bg-[var(--color-border)] px-2 py-0.5 text-xs text-[var(--color-muted)] no-underline hover:bg-[var(--color-accent)] hover:text-white"
-            >
-              {tag}
-            </a>
+            <TagPill tag={tag} />
           ))}
         </dd>
       </dl>
@@ -189,9 +185,11 @@ const structuredData = {
     tabs.forEach((tab, i) => {
       const selected = i === index;
       tab.setAttribute("aria-selected", String(selected));
-      tab.classList.toggle("border-[var(--color-accent)]", selected);
-      tab.classList.toggle("text-[var(--color-accent)]", selected);
+      tab.classList.toggle("border-[var(--color-accent-border)]", selected);
+      tab.classList.toggle("bg-[var(--color-surface-hover)]", selected);
+      tab.classList.toggle("text-[var(--color-foreground)]", selected);
       tab.classList.toggle("border-transparent", !selected);
+      tab.classList.toggle("bg-transparent", !selected);
       tab.classList.toggle("text-[var(--color-muted)]", !selected);
     });
     panels.forEach((panel, i) => {

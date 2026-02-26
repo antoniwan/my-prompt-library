@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import PageHeader from "../components/PageHeader.astro";
+import ButtonPrimary from "../components/ButtonPrimary.astro";
 ---
 
 <Layout
@@ -15,12 +16,9 @@ import PageHeader from "../components/PageHeader.astro";
   </p>
 
   <div class="flex flex-wrap gap-3">
-    <a
-      href="/"
-      class="inline-flex items-center rounded-lg bg-[var(--color-accent)] px-4 py-2.5 text-sm font-medium text-white no-underline transition-opacity hover:opacity-90 focus-visible:opacity-90"
-    >
+    <ButtonPrimary href="/">
       ← Back to home
-    </a>
+    </ButtonPrimary>
     <a
       href="/prompts/"
       class="inline-flex items-center rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-sm font-medium text-[var(--color-foreground)] no-underline hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] focus-visible:border-[var(--color-accent)] focus-visible:text-[var(--color-accent)]"

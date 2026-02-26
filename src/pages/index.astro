@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import PageHeader from "../components/PageHeader.astro";
 import PromptCard from "../components/PromptCard.astro";
+import ButtonPrimary from "../components/ButtonPrimary.astro";
 import { getCollection } from "astro:content";
 
 const allPrompts = await getCollection("prompts", ({ data }) => data.visibility === "public");
@@ -22,17 +23,14 @@ const recentPrompts = allPrompts
       Plain-text prompts in Markdown, stored in Git. Easy to read, copy, and adapt in your own tools. No lock-in.
     </p>
     <p class="mt-6">
-      <a
-        href="/prompts/"
-        class="inline-flex items-center rounded-lg bg-[var(--color-accent)] px-4 py-2.5 text-sm font-medium text-white no-underline transition-opacity hover:opacity-90 focus-visible:opacity-90"
-      >
+      <ButtonPrimary href="/prompts/">
         Browse prompts
-      </a>
+      </ButtonPrimary>
     </p>
   </section>
 
   {recentPrompts.length > 0 && (
-    <section aria-labelledby="recent-heading">
+    <section aria-labelledby="recent-heading" class="mt-10">
       <h2 id="recent-heading" class="mb-4 text-lg font-semibold text-[var(--color-foreground)]">
         Recent prompts
       </h2>
