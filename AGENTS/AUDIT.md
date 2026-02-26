@@ -89,7 +89,7 @@ From `package.json`:
   - `tailwindcss`: design system and utility classes (used in `global.css` via `@import "tailwindcss";`).
   - `@tailwindcss/vite`: Tailwind 4 plugin integrated into Vite (configured in `astro.config.mjs`).
   - `fuse.js`: **unused** (no imports in `src/` or scripts).
-    -- **devDependencies**: none.
+  -- **devDependencies**: none.
 
 ### 3.2 Findings
 
@@ -131,22 +131,19 @@ From `package.json`:
 ### 4.4 Recommendations
 
 1. **Move header search index to a shared JSON asset**
-   - Generate a single `search-index.json` at build time (e.g. via a dedicated Astro endpoint or by emitting a static asset using a small script).
-   - Have the header `SearchBar` fetch this JSON on first focus or when the user types.
-   - This removes the large `searchData` array and `SearchBar` class from every page’s HTML.
-
+  - Generate a single `search-index.json` at build time (e.g. via a dedicated Astro endpoint or by emitting a static asset using a small script).
+  - Have the header `SearchBar` fetch this JSON on first focus or when the user types.
+  - This removes the large `searchData` array and `SearchBar` class from every page’s HTML.
 2. **Use a “lite” index for header search**
-   - For the global header search, limit data to `{ type, id, title, url, optional short description }`.
-   - Reserve heavier fields (e.g. `bodyExcerpt`) for the full search page index only.
-
+  - For the global header search, limit data to `{ type, id, title, url, optional short description }`.
+  - Reserve heavier fields (e.g. `bodyExcerpt`) for the full search page index only.
 3. **Keep search result caps**
-   - Retain the `slice(0, 50)` cap on results in `search/index.astro`.
-   - Consider trimming `bodyExcerpt` to ~300–400 characters to keep the in-page index light.
-
+  - Retain the `slice(0, 50)` cap on results in `search/index.astro`.
+  - Consider trimming `bodyExcerpt` to ~300–400 characters to keep the in-page index light.
 4. **Service worker**
-   - The current `sw.js` is a no-op and is registered on every page. Either:
-     - Remove registration if offline support/caching is not planned, or
-     - Replace with a minimal caching strategy once performance requirements justify it.
+  - The current `sw.js` is a no-op and is registered on every page. Either:
+    - Remove registration if offline support/caching is not planned, or
+    - Replace with a minimal caching strategy once performance requirements justify it.
 
 ---
 
@@ -179,19 +176,13 @@ From `package.json`:
 ### 5.5 Recommendations
 
 1. **Add linting and formatting**
-   - Introduce ESLint with `eslint-plugin-astro` and TypeScript support, or Biome as an all-in-one alternative.
-   - Enforce: unused variables, consistent return types, no-undef, and Astro-specific best practices.
-   - Add Prettier or rely on Biome for formatting; configure format-on-save.
-
-2. **Type the migration script**
-   - Convert `scripts/migrate-imports.mjs` to TypeScript (e.g. `.mts`) and use `tsx` or a small build step to run it.
-   - Define interfaces for frontmatter and options so changes surface at compile time.
-
-3. **Centralize constants**
-   - Extract shared enums/constants (e.g. difficulties) into a single module and import them where needed.
-
-4. **Improve error handling**
-   - In dev builds, log search and theme errors to `console.error` or `console.warn` while still providing user-friendly messages.
+  - Introduce ESLint with `eslint-plugin-astro` and TypeScript support, or Biome as an all-in-one alternative.
+  - Enforce: unused variables, consistent return types, no-undef, and Astro-specific best practices.
+  - Add Prettier or rely on Biome for formatting; configure format-on-save.
+2. **Centralize constants**
+  - Extract shared enums/constants (e.g. difficulties) into a single module and import them where needed.
+3. **Improve error handling**
+  - In dev builds, log search and theme errors to `console.error` or `console.warn` while still providing user-friendly messages.
 
 ---
 
@@ -209,17 +200,15 @@ From `package.json`:
 ### Recommendations
 
 1. **Set `site` in `astro.config.mjs`**
-   - Define the production URL to enable correct canonical links and structured data URLs.
-
+  - Define the production URL to enable correct canonical links and structured data URLs.
 2. **Add CI**
-   - Use GitHub Actions (or similar) to run:
-     - Install.
-     - `npm run build`.
-     - `npm run lint` and `npm run test` (once introduced).
-
+  - Use GitHub Actions (or similar) to run:
+    - Install.
+    - `npm run build`.
+    - `npm run lint` and `npm run test` (once introduced).
 3. **Clarify package manager**
-   - Decide on a primary package manager (likely `pnpm`, as used in docs).
-   - Document it in `README.md` and/or `CONTRIBUTING.md`.
+  - Decide on a primary package manager (likely `pnpm`, as used in docs).
+  - Document it in `README.md` and/or `CONTRIBUTING.md`.
 
 ---
 
@@ -276,41 +265,29 @@ From `package.json`:
 
 ## 10. Refactoring Roadmap (Ordered by Architectural Leverage)
 
-1. **Align content schema and documentation** ✓ _Done_
-   - Add or remove fields like `use_count` consistently across `content.config.ts` and contributor-facing docs. _Canonical reference added in `PROMPT-SCHEMA.md`; README and CONTRIBUTING updated to match schema (visibility default, quality_score 0–5, models_tested type); schema comment added in `content.config.ts`._
-
-2. **Remove `fuse.js` and update AGENTS references** ✓ _Done_
-   - Clarify that search is implemented via a custom index and scoring. _`fuse.js` removed from dependencies; search remains custom (no Fuse)._
-
-3. **Introduce a central prompt data module** ✓ _Done_
-   - Implement `getPublicPrompts()` and helper functions in `src/data/prompts.ts`.
-   - Refactor pages and search components to rely on it. _Added `src/data/prompts.ts` with `getPublicPrompts()`, `getUniqueTags()`, `getUniqueAuthors()`, `getTagCounts()`, and `DIFFICULTIES`; all pages and `SearchBar.astro` now use it._
-
-4. **Externalize header search index** ✓ _Done_
-   - Build and serve a single `search-index.json`.
-   - Update `SearchBar.astro` to fetch and cache this index on demand. _Added `src/pages/search-index.json.ts` (prerendered at build); header search fetches `/search-index.json` on first query and caches it; lite index (description capped at 200 chars)._
-
-5. **Add linting + formatting** ✓ _Done_
-   - ESLint (with Astro + TS) and Prettier or Biome.
-   - Establish a standard coding style for all contributors. _Added ESLint 9 (flat config) with eslint-plugin-astro, typescript-eslint, and eslint-config-prettier; Prettier with prettier-plugin-astro; scripts: `lint`, `format`, `format:check`; .vscode format-on-save and ESLint fix on save._
-
-6. **Introduce tests and CI** ✓ _Done_
-   - Start with unit tests for the content schema and migration script.
-   - Add a GitHub Actions workflow for build, lint, and tests on PRs.
-     _Vitest added with Astro getViteConfig; prompt schema extracted to `src/schema/prompt.ts` and unit-tested; `src/data/prompts.ts` helpers (getUniqueTags, getUniqueAuthors, getTagCounts, DIFFICULTIES) covered by tests. GitHub Actions workflow `.github/workflows/ci.yml` runs on push/PR to main: install, lint, format:check, test, build. Migration script tests deferred to roadmap item 7._
-
-7. **Type and harden the migration script**
-   - Convert to TypeScript with explicit types.
-   - Add tests for slug generation, date handling, tag extraction, and frontmatter formatting.
-
-8. **Set `site` in `astro.config.mjs`**
-   - Improve SEO and consistency of structured data URLs.
-
-9. **Deduplicate constants and utilities**
-   - Extract difficulties, URL helpers, and shared class names/variants where appropriate.
-
-10. **Optional performance tweaks**
-    - Optimize font loading (preload, `font-display`).
-    - Refine service worker usage (either remove or implement minimal caching).
+1. **Align content schema and documentation** ✓ *Done*
+  - Add or remove fields like `use_count` consistently across `content.config.ts` and contributor-facing docs. *Canonical reference added in `PROMPT-SCHEMA.md`; README and CONTRIBUTING updated to match schema (visibility default, quality_score 0–5, models_tested type); schema comment added in `content.config.ts`.*
+2. **Remove `fuse.js` and update AGENTS references** ✓ *Done*
+  - Clarify that search is implemented via a custom index and scoring. *`fuse.js` removed from dependencies; search remains custom (no Fuse).*
+3. **Introduce a central prompt data module** ✓ *Done*
+  - Implement `getPublicPrompts()` and helper functions in `src/data/prompts.ts`.
+  - Refactor pages and search components to rely on it. *Added `src/data/prompts.ts` with `getPublicPrompts()`, `getUniqueTags()`, `getUniqueAuthors()`, `getTagCounts()`, and `DIFFICULTIES`; all pages and `SearchBar.astro` now use it.*
+4. **Externalize header search index** ✓ *Done*
+  - Build and serve a single `search-index.json`.
+  - Update `SearchBar.astro` to fetch and cache this index on demand. *Added `src/pages/search-index.json.ts` (prerendered at build); header search fetches `/search-index.json` on first query and caches it; lite index (description capped at 200 chars).*
+5. **Add linting + formatting** ✓ *Done*
+  - ESLint (with Astro + TS) and Prettier or Biome.
+  - Establish a standard coding style for all contributors. *Added ESLint 9 (flat config) with eslint-plugin-astro, typescript-eslint, and eslint-config-prettier; Prettier with prettier-plugin-astro; scripts: `lint`, `format`, `format:check`; .vscode format-on-save and ESLint fix on save.*
+6. **Introduce tests and CI** ✓ *Done*
+  - Start with unit tests for the content schema and migration script.
+  - Add a GitHub Actions workflow for build, lint, and tests on PRs.
+  *Vitest added with Astro getViteConfig; prompt schema extracted to `src/schema/prompt.ts` and unit-tested; `src/data/prompts.ts` helpers (getUniqueTags, getUniqueAuthors, getTagCounts, DIFFICULTIES) covered by tests. GitHub Actions workflow `.github/workflows/ci.yml` runs on push/PR to main: install, lint, format:check, test, build. Migration script tests deferred to roadmap item 7.*
+7. **Set `site` in `astro.config.mjs`**
+  - Improve SEO and consistency of structured data URLs.
+8. **Deduplicate constants and utilities**
+  - Extract difficulties, URL helpers, and shared class names/variants where appropriate.
+9. **Optional performance tweaks**
+  - Optimize font loading (preload, `font-display`).
+  - Refine service worker usage (either remove or implement minimal caching).
 
 This roadmap focuses on consolidating data and behavior, removing dead weight, and introducing guardrails (lint, tests, CI) before tackling smaller polish tasks.
