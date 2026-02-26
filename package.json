@@ -1,7 +1,7 @@
 {
   "name": "my-prompt-library",
   "type": "module",
-  "version": "0.14.0",
+  "version": "1.0.0",
   "author": {
     "name": "Antonio Rodriguez Martinez",
     "url": "https://github.com/antoniwan"
@@ -18,7 +18,9 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.0",
     "@tailwindcss/vite": "^4.2.1",
+    "@vercel/analytics": "^1.6.1",
     "astro": "^5.17.1",
     "tailwindcss": "^4.2.1"
   },

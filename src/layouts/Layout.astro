@@ -23,6 +23,7 @@ const {
 
 const canonicalHref =
   Astro.site && canonicalPath ? new URL(canonicalPath, Astro.site).href : undefined;
+const ogImageHref = Astro.site ? new URL("/share-image.png", Astro.site).href : undefined;
 const jsonLdSafe =
   structuredData != null
     ? JSON.stringify(structuredData).replace(/<\/script>/gi, "<\\/script>")
@@ -73,9 +74,13 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
     <meta property="og:description" content={description} />
     <meta property="og:type" content={ogType} />
     {canonicalHref && <meta property="og:url" content={canonicalHref} />}
-    <meta name="twitter:card" content="summary" />
+    {ogImageHref && <meta property="og:image" content={ogImageHref} />}
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    {ogImageHref && <meta name="twitter:image" content={ogImageHref} />}
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <title>{title}</title>
     {jsonLdSafe && <script type="application/ld+json" set:html={jsonLdSafe} />}
   </head>
@@ -155,6 +160,10 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
         </a>
       </div>
     </footer>
+    <script>
+      import { inject } from "@vercel/analytics";
+      inject();
+    </script>
   </body>
 </html>
 
