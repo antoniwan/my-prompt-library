@@ -286,8 +286,9 @@ From `package.json`:
   - Improve SEO and consistency of structured data URLs. *`site` set from `process.env.SITE` with fallback `https://example.com`; canonical and og:url in Layout and prompt pages now resolve correctly when SITE is set in production.*
 8. **Deduplicate constants and utilities** ✓ *Done*
    - Extract difficulties, URL helpers, and shared class names/variants where appropriate. *Single source for difficulties: `DIFFICULTIES` and `Difficulty` type live in `src/schema/prompt.ts`, re-exported from `src/data/prompts.ts`. Added `src/utils/urls.ts` with `promptsIndex()`, `promptDetail()`, `promptsByDifficulty()`, `promptsByAuthor()`, `tagsIndex()`, `tagDetail()`, `searchPage()`, `home()` and `PROMPT_PATH_PREFIX`/`PROMPT_PATH_SUFFIX` for client-side use. Added `src/utils/classes.ts` with `filterSelectClasses`, `filterSelectClassesSearch`, and `mutedLinkClasses`. All pages and components refactored to use URL helpers and shared class constants.*
-9. **Optional performance tweaks**
+9. **Optional performance tweaks** ✓ *Done*
   - Optimize font loading (preload, `font-display`).
   - Refine service worker usage (either remove or implement minimal caching).
+  *Fonts: added preload for the Geist/Geist Mono stylesheet (preconnect was already present; URL already uses `display=swap`). Service worker: registration removed from Layout.astro; `public/sw.js` retained so existing registrations do not 404.*
 
 This roadmap focuses on consolidating data and behavior, removing dead weight, and introducing guardrails (lint, tests, CI) before tackling smaller polish tasks.

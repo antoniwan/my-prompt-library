@@ -1,5 +1,5 @@
-// Minimal no-op service worker to avoid 404s on service worker requests.
-// This file can be extended later with real offline/caching behavior.
+// No-op service worker; registration was removed from the layout (roadmap item 9).
+// Kept so existing registrations do not 404. Can be extended later for offline/caching.
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();

@@ -40,9 +40,6 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
     <script is:inline>
       (function () {
         try {
-          if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/sw.js").catch(function () {});
-          }
           const stored = localStorage.getItem("theme");
           const theme =
             stored === "light" || stored === "dark"
@@ -58,6 +55,11 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
+      as="style"
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
       rel="stylesheet"
