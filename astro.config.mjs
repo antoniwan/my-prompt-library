@@ -11,6 +11,8 @@ const site = process.env.SITE || "https://example.com";
 // https://astro.build/config
 export default defineConfig({
   site,
+  // Match URL helpers (promptDetail, tagDetail, etc.) which use trailing slashes
+  trailingSlash: "always",
   vite: {
     plugins: [tailwindcss()],
   },

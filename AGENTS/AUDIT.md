@@ -292,3 +292,36 @@ From `package.json`:
   *Fonts: added preload for the Geist/Geist Mono stylesheet (preconnect was already present; URL already uses `display=swap`). Service worker: registration removed from Layout.astro; `public/sw.js` retained so existing registrations do not 404.*
 
 This roadmap focuses on consolidating data and behavior, removing dead weight, and introducing guardrails (lint, tests, CI) before tackling smaller polish tasks.
+
+---
+
+## 11. Routing & Slugs (Astro Native Alignment)
+
+**Date:** 2026-02-26  
+**Scope:** Ensure routing, dynamic segments, and slugs follow Astro’s native content-collection and file-based routing patterns.
+
+### 11.1 Findings
+
+- **Content collection usage**
+  - `src/content.config.ts` uses `defineCollection()` with the `glob()` loader and a Zod schema, matching [Astro’s content collections guide](https://docs.astro.build/en/guides/content-collections/).
+  - Prompt entries use `entry.id` for routing. With the glob loader, `id` is derived from the filename (or overridden by frontmatter `slug` when present). The project requires `slug` in frontmatter and expects it to match the filename (`PROMPT-SCHEMA.md`), so `entry.id` aligns with the canonical URL segment.
+- **Dynamic routes**
+  - **Prompts:** `src/pages/prompts/[id].astro` uses `getStaticPaths()` returning `params: { id: entry.id }` and `props: { entry }`, then renders via `render(entry)`. This matches Astro’s documented pattern (e.g. “Generate a new path for every collection entry” with `params: { id: post.id }`).
+  - **Tags:** `src/pages/tags/[tag].astro` uses `getStaticPaths()` with one path per tag from `getUniqueTags(prompts)` and `params: { tag }`. Tags are derived data, not a separate collection; generating paths from the prompts collection is appropriate.
+- **Single-entry lookup**
+  - The alternative pattern (`getEntry('blog', id)` in the page with redirect to 404) is also valid. This project uses the getStaticPaths + props approach so all routes are known at build time; no change required.
+- **URL helpers**
+  - `src/utils/urls.ts` centralizes path construction: `promptDetail(id)`, `tagDetail(tag)`, `promptsIndex()`, etc. All links use these helpers, so path shape is consistent.
+- **Trailing slashes**
+  - Helpers use trailing slashes (e.g. `/prompts/<id>/`, `/tags/<tag>/`). Astro’s default is `trailingSlash: 'ignore'`. Setting `trailingSlash: 'always'` in `astro.config.mjs` makes canonical URLs and redirect behavior consistent with the generated links.
+
+### 11.2 Changes made
+
+- **`astro.config.mjs`**
+  - Set `trailingSlash: "always"` so that:
+    - Output and canonical URLs use trailing slashes.
+    - Requests without a trailing slash redirect (301) to the version with one, matching the URL helpers.
+
+### 11.3 Summary
+
+Routing and slugs follow Astro’s native patterns: content collection with glob loader, `entry.id` for prompt URLs, getStaticPaths + props for static generation, and a single source of truth for paths in `src/utils/urls.ts`. The only config adjustment was `trailingSlash: 'always'` to align with the existing URL design.
