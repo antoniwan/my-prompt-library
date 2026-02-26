@@ -15,14 +15,14 @@ const tags = getTagCounts(prompts);
   <PageHeader title="Tags" description="Browse prompts by tag." />
 
   <ul class="flex list-none flex-wrap gap-2 p-0" aria-label="List of tags">
-    {tags.map(({ tag, count }) => (
-      <li>
-        <TagPill tag={tag} count={count} />
-      </li>
-    ))}
+    {
+      tags.map(({ tag, count }) => (
+        <li>
+          <TagPill tag={tag} count={count} />
+        </li>
+      ))
+    }
   </ul>
 
-  {tags.length === 0 && (
-    <p class="text-[var(--color-muted)]">No tags yet.</p>
-  )}
+  {tags.length === 0 && <p class="text-[var(--color-muted)]">No tags yet.</p>}
 </Layout>

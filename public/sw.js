@@ -2,14 +2,13 @@
 // This file can be extended later with real offline/caching behavior.
 
 self.addEventListener("install", (event) => {
-	self.skipWaiting();
+  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
-	clients.claim();
+  clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
-	// Pass-through: do not intercept any requests.
+  // Pass-through: do not intercept any requests.
 });
-

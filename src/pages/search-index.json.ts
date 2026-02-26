@@ -7,10 +7,34 @@ import { getPublicPrompts, getTagCounts } from "../data/prompts";
 export const prerender = true;
 
 const PAGE_ENTRIES = [
-  { type: "page" as const, id: "home", title: "Home", description: "Overview of My Prompt Library", url: "/" },
-  { type: "page" as const, id: "prompts", title: "Prompts", description: "Browse all prompts", url: "/prompts/" },
-  { type: "page" as const, id: "tags", title: "Tags", description: "Browse all tags", url: "/tags/" },
-  { type: "page" as const, id: "search", title: "Search", description: "Full-page search interface", url: "/search/" },
+  {
+    type: "page" as const,
+    id: "home",
+    title: "Home",
+    description: "Overview of My Prompt Library",
+    url: "/",
+  },
+  {
+    type: "page" as const,
+    id: "prompts",
+    title: "Prompts",
+    description: "Browse all prompts",
+    url: "/prompts/",
+  },
+  {
+    type: "page" as const,
+    id: "tags",
+    title: "Tags",
+    description: "Browse all tags",
+    url: "/tags/",
+  },
+  {
+    type: "page" as const,
+    id: "search",
+    title: "Search",
+    description: "Full-page search interface",
+    url: "/search/",
+  },
 ];
 
 export async function GET() {

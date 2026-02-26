@@ -5,8 +5,7 @@ interface Props {
 }
 
 const { href, size = "md" } = Astro.props;
-const sizeClasses =
-  size === "sm" ? "px-3 py-2 text-sm" : "px-4 py-2.5 text-sm";
+const sizeClasses = size === "sm" ? "px-3 py-2 text-sm" : "px-4 py-2.5 text-sm";
 ---
 
 <a
@@ -15,4 +14,3 @@ const sizeClasses =
 >
   <slot />
 </a>
-

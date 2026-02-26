@@ -12,7 +12,7 @@ export type Difficulty = (typeof DIFFICULTIES)[number];
 export async function getPublicPrompts(): Promise<CollectionEntry<"prompts">[]> {
   const entries = await getCollection("prompts", ({ data }) => data.visibility === "public");
   return entries.sort(
-    (a, b) => new Date(b.data.updated_at).getTime() - new Date(a.data.updated_at).getTime(),
+    (a, b) => new Date(b.data.updated_at).getTime() - new Date(a.data.updated_at).getTime()
   );
 }
 
@@ -37,7 +37,9 @@ export function getUniqueAuthors(entries: CollectionEntry<"prompts">[]): string[
 }
 
 /** Tag names with counts, sorted by tag name. */
-export function getTagCounts(entries: CollectionEntry<"prompts">[]): { tag: string; count: number }[] {
+export function getTagCounts(
+  entries: CollectionEntry<"prompts">[]
+): { tag: string; count: number }[] {
   const counts = new Map<string, number>();
   for (const entry of entries) {
     for (const tag of entry.data.tags) {

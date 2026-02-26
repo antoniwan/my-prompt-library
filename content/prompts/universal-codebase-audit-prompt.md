@@ -187,4 +187,3 @@ Provide findings in this exact structure, using clear, direct language:
 - Do not suggest trends or stylistic opinions without architectural reasoning.
 - Prioritize structural soundness over feature expansion.
 - Assume long-term ownership and multiple contributors.
-

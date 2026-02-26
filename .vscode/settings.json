@@ -1,4 +1,9 @@
 {
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
   // Project identity: teal toolbar so you can spot "my-prompt-library" among other windows.
   // If the title bar color doesn’t apply, set "window.titleBarStyle": "custom" once in User settings.
   "workbench.colorCustomizations": {

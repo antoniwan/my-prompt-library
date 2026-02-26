@@ -18,10 +18,7 @@ const allPrompts = await getPublicPrompts();
 const prompts = allPrompts.filter((entry) => entry.data.tags.includes(tag));
 ---
 
-<Layout
-  title={`${tag} — Tags — My Prompt Library`}
-  description={`Prompts tagged with ${tag}.`}
->
+<Layout title={`${tag} — Tags — My Prompt Library`} description={`Prompts tagged with ${tag}.`}>
   <PageHeader title={`Tag: ${tag}`}>
     <p class="m-0">
       <a href="/tags/" class="text-[var(--color-accent)] hover:underline">All tags</a>
@@ -31,10 +28,12 @@ const prompts = allPrompts.filter((entry) => entry.data.tags.includes(tag));
   </PageHeader>
 
   <ul class="list-none space-y-4 p-0" aria-label={`Prompts tagged with ${tag}`}>
-    {prompts.map((entry) => (
-      <li>
-        <PromptCard entry={entry} showTags={false} />
-      </li>
-    ))}
+    {
+      prompts.map((entry) => (
+        <li>
+          <PromptCard entry={entry} showTags={false} />
+        </li>
+      ))
+    }
   </ul>
 </Layout>

@@ -1,7 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import TagPill from "../../components/TagPill.astro";
-import { getEntry, render } from "astro:content";
+import { render } from "astro:content";
 import { getPublicPrompts } from "../../data/prompts";
 
 export async function getStaticPaths() {
@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content, headings } = await render(entry);
+const { Content } = await render(entry);
 
 const rawMarkdown = typeof entry.body === "string" ? entry.body : "";
 const escapedMarkdown = rawMarkdown
@@ -52,9 +52,7 @@ const structuredData = {
       </h1>
     </header>
 
-    {entry.data.summary && (
-      <p class="mb-6 text-[var(--color-muted)]">{entry.data.summary}</p>
-    )}
+    {entry.data.summary && <p class="mb-6 text-[var(--color-muted)]">{entry.data.summary}</p>}
 
     <div class="mb-6 flex flex-wrap items-center gap-3">
       <button
@@ -70,11 +68,14 @@ const structuredData = {
         id="copy-status"
         class="text-sm text-[var(--color-muted)]"
         aria-live="polite"
-        role="status"
-      ></span>
+        role="status"></span>
     </div>
 
-    <div class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]" role="tablist" aria-label="Prompt view">
+    <div
+      class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]"
+      role="tablist"
+      aria-label="Prompt view"
+    >
       <div class="flex border-b border-[var(--color-border)] bg-[var(--color-surface)]">
         <button
           type="button"
@@ -119,8 +120,7 @@ const structuredData = {
         <pre
           id="prompt-text"
           class="overflow-x-auto rounded bg-[var(--color-background)] p-4 text-sm leading-relaxed whitespace-pre-wrap break-words border border-[var(--color-border)]"
-          aria-label="Full prompt text"
-        ><code set:html={escapedMarkdown}></code></pre>
+          aria-label="Full prompt text"><code set:html={escapedMarkdown} /></pre>
       </div>
     </div>
 
@@ -131,12 +131,12 @@ const structuredData = {
         <dt class="font-medium text-[var(--color-foreground)]">Difficulty</dt>
         <dd class="text-[var(--color-muted)]">{entry.data.difficulty}</dd>
         <dt class="font-medium text-[var(--color-foreground)]">Updated</dt>
-        <dd class="text-[var(--color-muted)]">{new Date(entry.data.updated_at).toLocaleDateString()}</dd>
+        <dd class="text-[var(--color-muted)]">
+          {new Date(entry.data.updated_at).toLocaleDateString()}
+        </dd>
         <dt class="visually-hidden">Tags</dt>
         <dd class="col-span-2 mt-2 flex flex-wrap gap-1.5">
-          {entry.data.tags.map((tag) => (
-            <TagPill tag={tag} />
-          ))}
+          {entry.data.tags.map((tag) => <TagPill tag={tag} />)}
         </dd>
       </dl>
     </footer>

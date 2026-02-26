@@ -31,17 +31,15 @@ Open **[http://localhost:4321](http://localhost:4321)**. You should see the home
 
 ## Project Structure
 
-
-| Path                    | Purpose                                                                                          |
-| ----------------------- | ------------------------------------------------------------------------------------------------ |
-| `content/prompts/`      | Prompt Markdown files. Filename (without `.md`) = URL slug.                                      |
+| Path                    | Purpose                                                                                                    |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `content/prompts/`      | Prompt Markdown files. Filename (without `.md`) = URL slug.                                                |
 | `src/content.config.ts` | Content collection schema (Zod). Defines required frontmatter and validation. See also `PROMPT-SCHEMA.md`. |
-| `src/pages/`            | Astro routes: `/`, `/prompts/`, `/prompts/[id]/`, `/tags/`, `/tags/[tag]/`, `/search/`, `/404`.  |
-| `src/layouts/`          | Shared layout (header, footer, theme, search).                                                   |
-| `src/components/`       | Reusable UI: `PromptCard`, `TagPill`, `SearchBar`, `ThemeToggle`, `PageHeader`, `ButtonPrimary`. |
-| `src/styles/global.css` | Global design tokens and Tailwind import.                                                        |
-| `public/`               | Static assets (favicons, PWA, images).                                                           |
-
+| `src/pages/`            | Astro routes: `/`, `/prompts/`, `/prompts/[id]/`, `/tags/`, `/tags/[tag]/`, `/search/`, `/404`.            |
+| `src/layouts/`          | Shared layout (header, footer, theme, search).                                                             |
+| `src/components/`       | Reusable UI: `PromptCard`, `TagPill`, `SearchBar`, `ThemeToggle`, `PageHeader`, `ButtonPrimary`.           |
+| `src/styles/global.css` | Global design tokens and Tailwind import.                                                                  |
+| `public/`               | Static assets (favicons, PWA, images).                                                                     |
 
 ## How to Make a Change
 
@@ -59,8 +57,10 @@ Open **[http://localhost:4321](http://localhost:4321)**. You should see the home
 
 - `npm run dev` — confirm locally.
 - `npm run build` — must complete without errors. Preview with `npm run preview`.
+- `npm run lint` — ESLint (Astro + TypeScript). Fix auto-applied where possible.
+- `npm run format` — Prettier (including `.astro`). Use `npm run format:check` to verify without writing.
 
-There are no test scripts or lint/format config in the repo; validation is via the content schema (build fails if frontmatter is invalid) and manual checks.
+Validation is via the content schema (build fails if frontmatter is invalid), lint, and manual checks.
 
 ## Known Constraints
 
@@ -68,4 +68,3 @@ There are no test scripts or lint/format config in the repo; validation is via t
 - **Visibility:** Only entries with `visibility: public` are included in lists, tags, search, and `getStaticPaths`. `draft` entries exist in the repo but are never rendered on the site.
 - **Schema is strict:** Adding or changing frontmatter fields requires updating `src/content.config.ts` (Zod schema). Invalid or missing required fields cause the build to fail.
 - **Search index:** Header search and the `/search/` page each build their own in-memory index from the prompts collection; there is no shared search module. Changing what’s searchable (e.g. new fields) may require edits in both `SearchBar.astro` and `search/index.astro`.
-

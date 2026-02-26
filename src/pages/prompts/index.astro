@@ -2,7 +2,12 @@
 import Layout from "../../layouts/Layout.astro";
 import PageHeader from "../../components/PageHeader.astro";
 import PromptCard from "../../components/PromptCard.astro";
-import { getPublicPrompts, getUniqueTags, getUniqueAuthors, DIFFICULTIES } from "../../data/prompts";
+import {
+  getPublicPrompts,
+  getUniqueTags,
+  getUniqueAuthors,
+  DIFFICULTIES,
+} from "../../data/prompts";
 
 const prompts = await getPublicPrompts();
 const tags = getUniqueTags(prompts);
@@ -19,7 +24,9 @@ const difficulties = DIFFICULTIES;
     description="Browse and filter prompts by tag, difficulty, or author. Every entry is a plain Markdown file in this repo."
   />
 
-  <div class="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--color-border)] border-l-4 border-l-[var(--color-accent)] bg-[var(--color-accent-subtle)] p-4">
+  <div
+    class="mb-6 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--color-border)] border-l-4 border-l-[var(--color-accent)] bg-[var(--color-accent-subtle)] p-4"
+  >
     <span class="text-xs font-medium uppercase tracking-wider text-[var(--color-muted)]">
       Filters
     </span>
@@ -37,11 +44,7 @@ const difficulties = DIFFICULTIES;
         aria-label="Filter by difficulty"
       >
         <option value="">All difficulties</option>
-        {difficulties.map((d) => (
-          <option value={d}>
-            {d}
-          </option>
-        ))}
+        {difficulties.map((d) => <option value={d}>{d}</option>)}
       </select>
       <label for="filter-author" class="sr-only">Author</label>
       <select
@@ -51,11 +54,7 @@ const difficulties = DIFFICULTIES;
         aria-label="Filter by author"
       >
         <option value="">All authors</option>
-        {authors.map((a) => (
-          <option value={a}>
-            {a}
-          </option>
-        ))}
+        {authors.map((a) => <option value={a}>{a}</option>)}
       </select>
       <label for="filter-tag" class="sr-only">Tag</label>
       <select
@@ -65,11 +64,7 @@ const difficulties = DIFFICULTIES;
         aria-label="Filter by tag"
       >
         <option value="">All tags</option>
-        {tags.map((t) => (
-          <option value={t}>
-            {t}
-          </option>
-        ))}
+        {tags.map((t) => <option value={t}>{t}</option>)}
       </select>
       <button
         type="submit"
@@ -80,27 +75,22 @@ const difficulties = DIFFICULTIES;
     </form>
   </div>
 
-  <ul
-    class="list-none space-y-4 p-0"
-    aria-label="List of prompts"
-    data-prompts-list
-  >
-    {prompts.map((entry) => (
-      <li
-        data-prompt-item
-        data-difficulty={entry.data.difficulty}
-        data-author={entry.data.author}
-        data-tags={entry.data.tags.join(",")}
-      >
-        <PromptCard entry={entry} />
-      </li>
-    ))}
+  <ul class="list-none space-y-4 p-0" aria-label="List of prompts" data-prompts-list>
+    {
+      prompts.map((entry) => (
+        <li
+          data-prompt-item
+          data-difficulty={entry.data.difficulty}
+          data-author={entry.data.author}
+          data-tags={entry.data.tags.join(",")}
+        >
+          <PromptCard entry={entry} />
+        </li>
+      ))
+    }
   </ul>
 
-  <p
-    id="prompts-empty"
-    class="mt-4 hidden text-[var(--color-muted)]"
-  >
+  <p id="prompts-empty" class="mt-4 hidden text-[var(--color-muted)]">
     No prompts found for the selected filters.
   </p>
 </Layout>
@@ -109,7 +99,7 @@ const difficulties = DIFFICULTIES;
   if (typeof window !== "undefined") {
     const form = document.querySelector("[data-prompts-filter]");
     const selectDifficulty = document.getElementById(
-      "filter-difficulty",
+      "filter-difficulty"
     ) as HTMLSelectElement | null;
     const selectAuthor = document.getElementById("filter-author") as HTMLSelectElement | null;
     const selectTag = document.getElementById("filter-tag") as HTMLSelectElement | null;

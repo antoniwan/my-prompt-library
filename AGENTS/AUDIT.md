@@ -89,7 +89,7 @@ From `package.json`:
   - `tailwindcss`: design system and utility classes (used in `global.css` via `@import "tailwindcss";`).
   - `@tailwindcss/vite`: Tailwind 4 plugin integrated into Vite (configured in `astro.config.mjs`).
   - `fuse.js`: **unused** (no imports in `src/` or scripts).
--- **devDependencies**: none.
+    -- **devDependencies**: none.
 
 ### 3.2 Findings
 
@@ -276,23 +276,23 @@ From `package.json`:
 
 ## 10. Refactoring Roadmap (Ordered by Architectural Leverage)
 
-1. **Align content schema and documentation** ✓ *Done*
-   - Add or remove fields like `use_count` consistently across `content.config.ts` and contributor-facing docs. *Canonical reference added in `PROMPT-SCHEMA.md`; README and CONTRIBUTING updated to match schema (visibility default, quality_score 0–5, models_tested type); schema comment added in `content.config.ts`.*
+1. **Align content schema and documentation** ✓ _Done_
+   - Add or remove fields like `use_count` consistently across `content.config.ts` and contributor-facing docs. _Canonical reference added in `PROMPT-SCHEMA.md`; README and CONTRIBUTING updated to match schema (visibility default, quality_score 0–5, models_tested type); schema comment added in `content.config.ts`._
 
-2. **Remove `fuse.js` and update AGENTS references** ✓ *Done*
-   - Clarify that search is implemented via a custom index and scoring. *`fuse.js` removed from dependencies; search remains custom (no Fuse).*
+2. **Remove `fuse.js` and update AGENTS references** ✓ _Done_
+   - Clarify that search is implemented via a custom index and scoring. _`fuse.js` removed from dependencies; search remains custom (no Fuse)._
 
-3. **Introduce a central prompt data module** ✓ *Done*
+3. **Introduce a central prompt data module** ✓ _Done_
    - Implement `getPublicPrompts()` and helper functions in `src/data/prompts.ts`.
-   - Refactor pages and search components to rely on it. *Added `src/data/prompts.ts` with `getPublicPrompts()`, `getUniqueTags()`, `getUniqueAuthors()`, `getTagCounts()`, and `DIFFICULTIES`; all pages and `SearchBar.astro` now use it.*
+   - Refactor pages and search components to rely on it. _Added `src/data/prompts.ts` with `getPublicPrompts()`, `getUniqueTags()`, `getUniqueAuthors()`, `getTagCounts()`, and `DIFFICULTIES`; all pages and `SearchBar.astro` now use it._
 
-4. **Externalize header search index** ✓ *Done*
+4. **Externalize header search index** ✓ _Done_
    - Build and serve a single `search-index.json`.
-   - Update `SearchBar.astro` to fetch and cache this index on demand. *Added `src/pages/search-index.json.ts` (prerendered at build); header search fetches `/search-index.json` on first query and caches it; lite index (description capped at 200 chars).*
+   - Update `SearchBar.astro` to fetch and cache this index on demand. _Added `src/pages/search-index.json.ts` (prerendered at build); header search fetches `/search-index.json` on first query and caches it; lite index (description capped at 200 chars)._
 
-5. **Add linting + formatting**
+5. **Add linting + formatting** ✓ *Done*
    - ESLint (with Astro + TS) and Prettier or Biome.
-   - Establish a standard coding style for all contributors.
+   - Establish a standard coding style for all contributors. *Added ESLint 9 (flat config) with eslint-plugin-astro, typescript-eslint, and eslint-config-prettier; Prettier with prettier-plugin-astro; scripts: `lint`, `format`, `format:check`; .vscode format-on-save and ESLint fix on save.*
 
 6. **Introduce tests and CI**
    - Start with unit tests for the content schema and migration script.

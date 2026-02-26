@@ -35,19 +35,24 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <style is:inline set:html={criticalCSS} />
+    <style is:inline set:html={criticalCSS}></style>
     <script is:inline>
       (function () {
         try {
           if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("/sw.js").catch(function () {});
           }
-          var stored = localStorage.getItem("theme");
-          var theme = stored === "light" || stored === "dark"
-            ? stored
-            : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+          const stored = localStorage.getItem("theme");
+          const theme =
+            stored === "light" || stored === "dark"
+              ? stored
+              : window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light";
           document.documentElement.setAttribute("data-theme", theme);
-        } catch (e) {}
+        } catch {
+          /* Theme init may fail in restricted contexts */
+        }
       })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -69,9 +74,7 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <title>{title}</title>
-    {jsonLdSafe && (
-      <script type="application/ld+json" set:html={jsonLdSafe} />
-    )}
+    {jsonLdSafe && <script type="application/ld+json" set:html={jsonLdSafe} />}
   </head>
   <body class="flex min-h-screen flex-col">
     <a href="#main" class="skip-link">Skip to main content</a>
