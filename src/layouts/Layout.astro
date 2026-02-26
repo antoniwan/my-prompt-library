@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import SearchBar from "../components/SearchBar.astro";
+import pkg from "../../package.json";
 
 interface Props {
   title?: string;
@@ -126,12 +127,27 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0a0a0a;--colo
     </main>
 
     <footer
-      class="shrink-0 border-t border-[var(--color-border)] bg-[var(--color-surface)] py-6 text-center"
+      class="shrink-0 border-t border-[var(--color-border)] bg-[var(--color-surface)] py-6"
       role="contentinfo"
     >
-      <p class="m-0 text-xs text-[var(--color-muted)]">
-        My Prompt Library — curated, version-controlled, portable.
-      </p>
+      <div class="flex flex-col items-center justify-center gap-1 text-center sm:flex-row sm:gap-3">
+        <p class="m-0 text-xs text-[var(--color-muted)]">
+          My Prompt Library — curated, version-controlled, portable.
+        </p>
+        <span class="hidden text-[var(--color-border)] sm:inline" aria-hidden="true">·</span>
+        <p class="m-0 text-xs text-[var(--color-muted)]">
+          v{pkg.version}
+        </p>
+        <span class="hidden text-[var(--color-border)] sm:inline" aria-hidden="true">·</span>
+        <a
+          href="https://github.com/antoniwan/my-prompt-library"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-xs text-[var(--color-muted)] no-underline hover:text-[var(--color-accent)] focus-visible:text-[var(--color-accent)]"
+        >
+          GitHub
+        </a>
+      </div>
     </footer>
   </body>
 </html>
