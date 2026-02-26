@@ -99,111 +99,154 @@ const filterOptions = {
 </Layout>
 
 <script define:vars={{ searchIndex }}>
-  import Fuse from "fuse.js";
+  if (typeof window !== "undefined") {
+    function initSearch() {
+      const form = document.querySelector('form[role="search"]');
+      const input = document.getElementById("search-input");
+      const filterDifficulty = document.getElementById("filter-difficulty");
+      const filterAuthor = document.getElementById("filter-author");
+      const filterTag = document.getElementById("filter-tag");
+      const initialEl = document.getElementById("search-initial");
+      const listEl = document.getElementById("search-list");
+      const emptyEl = document.getElementById("search-empty");
+      const errorEl = document.getElementById("search-error");
 
-  const form = document.querySelector("form");
-  const input = document.getElementById("search-input");
-  const filterDifficulty = document.getElementById("filter-difficulty");
-  const filterAuthor = document.getElementById("filter-author");
-  const filterTag = document.getElementById("filter-tag");
-  const initialEl = document.getElementById("search-initial");
-  const listEl = document.getElementById("search-list");
-  const emptyEl = document.getElementById("search-empty");
-  const errorEl = document.getElementById("search-error");
-
-  if (!input || !listEl || !initialEl || !emptyEl) throw new Error("Missing elements");
-
-  form?.addEventListener("submit", (e) => e.preventDefault());
-
-  const fullIndex = Array.isArray(searchIndex) ? searchIndex : [];
-  const fuse = new Fuse(fullIndex, {
-    keys: [
-      { name: "title", weight: 0.4 },
-      { name: "summary", weight: 0.3 },
-      { name: "bodyExcerpt", weight: 0.2 },
-      { name: "tags", weight: 0.15 },
-      { name: "author", weight: 0.05 },
-      { name: "difficulty", weight: 0.05 },
-    ],
-    threshold: 0.3,
-    includeScore: true,
-  });
-
-  function getFilteredIndex() {
-    const difficulty = filterDifficulty?.value ?? "";
-    const author = filterAuthor?.value ?? "";
-    const tag = filterTag?.value ?? "";
-    if (!difficulty && !author && !tag) return fullIndex;
-    return fullIndex.filter((item) => {
-      if (difficulty && item.difficulty !== difficulty) return false;
-      if (author && item.author !== author) return false;
-      if (tag && !item.tags.includes(tag)) return false;
-      return true;
-    });
-  }
-
-  function runSearch() {
-    const q = input.value.trim();
-    const filtered = getFilteredIndex();
-    const hasFilters = !!(filterDifficulty?.value || filterAuthor?.value || filterTag?.value);
-    listEl.classList.add("hidden");
-    listEl.innerHTML = "";
-    initialEl.classList.add("hidden");
-    emptyEl.classList.add("hidden");
-    errorEl.classList.add("hidden");
-
-    if (q.length === 0) {
-      if (filtered.length === 0) {
-        emptyEl.classList.remove("hidden");
+      if (!input || !listEl || !initialEl || !emptyEl || !errorEl) {
         return;
       }
-      if (!hasFilters) {
-        initialEl.classList.remove("hidden");
-        return;
+
+      form?.addEventListener("submit", (e) => e.preventDefault());
+
+      const allPrompts = Array.isArray(searchIndex) ? searchIndex : [];
+
+      function normalize(value) {
+        return (value ?? "").toString().toLowerCase();
       }
-      const slice = filtered.slice(0, 25).map((item) => ({ item, score: 0 }));
-      renderResults(slice);
-      return;
-    }
-    const searchFuse = new Fuse(filtered, fuse.config);
-    const results = searchFuse.search(q).slice(0, 25);
-    renderResults(results);
-  }
 
-  function renderResults(results) {
-    if (results.length === 0) {
-      emptyEl.classList.remove("hidden");
-      return;
-    }
-    listEl.classList.remove("hidden");
-    const ul = document.createElement("ul");
-    ul.className = "list-none space-y-3 p-0";
-    ul.setAttribute("aria-label", "Search results");
-    for (const { item } of results) {
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.href = `/prompts/${item.id}/`;
-      a.className =
-        "block rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 no-underline text-[var(--color-foreground)] hover:border-[var(--color-accent)]";
-      a.innerHTML = `
-        <span class="font-semibold">${escapeHtml(item.title)}</span>
-        ${item.summary ? `<span class="mt-1 block text-sm text-[var(--color-muted)]">${escapeHtml(item.summary)}</span>` : ""}
-        <span class="mt-2 block text-xs text-[var(--color-muted)]">${escapeHtml(item.tags.join(", "))} · ${escapeHtml(item.difficulty)}</span>
-      `;
-      li.appendChild(a);
-      ul.appendChild(li);
-    }
-    listEl.appendChild(ul);
-  }
+      function getActiveFilters() {
+        const difficulty = filterDifficulty && "value" in filterDifficulty ? filterDifficulty.value : "";
+        const author = filterAuthor && "value" in filterAuthor ? filterAuthor.value : "";
+        const tag = filterTag && "value" in filterTag ? filterTag.value : "";
+        return { difficulty, author, tag };
+      }
 
-  function escapeHtml(text) {
-    const div = document.createElement("div");
-    div.textContent = text;
-    return div.innerHTML;
-  }
+      function applyFilters(items) {
+        const { difficulty, author, tag } = getActiveFilters();
+        if (!difficulty && !author && !tag) return items;
+        return items.filter((item) => {
+          if (difficulty && item.difficulty !== difficulty) return false;
+          if (author && item.author !== author) return false;
+          if (tag && !Array.isArray(item.tags) ? true : !item.tags.includes(tag)) return false;
+          return true;
+        });
+      }
 
-  input.addEventListener("input", runSearch);
-  filterDifficulty?.addEventListener("change", runSearch);
-  filterAuthor?.addEventListener("change", runSearch);
-  filterTag?.addEventListener("change", runSearch);
+      function matchesQuery(item, query) {
+        const q = normalize(query);
+        if (!q) return true;
+
+        if (normalize(item.title).includes(q)) return true;
+        if (normalize(item.summary).includes(q)) return true;
+        if (normalize(item.author).includes(q)) return true;
+        if (normalize(item.difficulty).includes(q)) return true;
+
+        if (Array.isArray(item.tags) && item.tags.some((tag) => normalize(tag).includes(q))) {
+          return true;
+        }
+
+        if (normalize(item.bodyExcerpt).includes(q)) return true;
+
+        return false;
+      }
+
+      function clearState() {
+        listEl.classList.add("hidden");
+        listEl.innerHTML = "";
+        initialEl.classList.add("hidden");
+        emptyEl.classList.add("hidden");
+        errorEl.classList.add("hidden");
+      }
+
+      function renderResults(items) {
+        if (!items.length) {
+          emptyEl.classList.remove("hidden");
+          return;
+        }
+
+        listEl.classList.remove("hidden");
+
+        const ul = document.createElement("ul");
+        ul.className = "list-none space-y-3 p-0";
+        ul.setAttribute("aria-label", "Search results");
+
+        for (const item of items) {
+          const li = document.createElement("li");
+          const a = document.createElement("a");
+          a.href = `/prompts/${item.id}/`;
+          a.className =
+            "block rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 no-underline text-[var(--color-foreground)] hover:border-[var(--color-accent)]";
+          a.innerHTML = `
+            <span class="font-semibold">${escapeHtml(item.title)}</span>
+            ${
+              item.summary
+                ? `<span class="mt-1 block text-sm text-[var(--color-muted)]">${escapeHtml(
+                    item.summary,
+                  )}</span>`
+                : ""
+            }
+            <span class="mt-2 block text-xs text-[var(--color-muted)]">${escapeHtml(
+              (Array.isArray(item.tags) ? item.tags : []).join(", "),
+            )}${item.difficulty ? ` · ${escapeHtml(item.difficulty)}` : ""}</span>
+          `;
+          li.appendChild(a);
+          ul.appendChild(li);
+        }
+
+        listEl.appendChild(ul);
+      }
+
+      function runSearch() {
+        const query = (input?.value ?? "").trim();
+        const hasQuery = query.length > 0;
+        const filtered = applyFilters(allPrompts);
+        const { difficulty, author, tag } = getActiveFilters();
+        const hasFilters = !!(difficulty || author || tag);
+
+        clearState();
+
+        if (!hasQuery && !hasFilters) {
+          initialEl.classList.remove("hidden");
+          return;
+        }
+
+        try {
+          const results = filtered.filter((item) => matchesQuery(item, query)).slice(0, 50);
+          if (!results.length) {
+            emptyEl.classList.remove("hidden");
+            return;
+          }
+          renderResults(results);
+        } catch {
+          errorEl.classList.remove("hidden");
+        }
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = String(text);
+        return div.innerHTML;
+      }
+
+      input.addEventListener("input", runSearch);
+      filterDifficulty?.addEventListener("change", runSearch);
+      filterAuthor?.addEventListener("change", runSearch);
+      filterTag?.addEventListener("change", runSearch);
+    }
+
+    if (document.readyState === "loading") {
+      window.addEventListener("DOMContentLoaded", initSearch, { once: true });
+    } else {
+      initSearch();
+    }
+  }
 </script>
