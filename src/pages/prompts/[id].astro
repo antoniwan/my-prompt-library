@@ -3,8 +3,8 @@ import Layout from "../../layouts/Layout.astro";
 import TagPill from "../../components/TagPill.astro";
 import { render } from "astro:content";
 import { getPublicPrompts } from "../../data/prompts";
-import { SITE_NAME } from "../../data/site";
-import { promptDetail } from "../../utils/urls";
+import { SITE_NAME, SITE_URL } from "../../data/site";
+import { promptDetail, home, promptsIndex } from "../../utils/urls";
 
 export async function getStaticPaths() {
   const prompts = await getPublicPrompts();
@@ -29,8 +29,20 @@ const description =
   entry.data.summary ||
   (entry.data.title && `${entry.data.title}. A prompt from ${SITE_NAME}.`);
 const canonicalPath = promptDetail(entry.id);
-const articleUrl = Astro.site ? new URL(canonicalPath, Astro.site).href : undefined;
-const structuredData = {
+const siteBase = (Astro.site?.href ?? SITE_URL).replace(/\/$/, "");
+const articleUrl = `${siteBase}${canonicalPath}`;
+
+const breadcrumbList = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: `${siteBase}${home()}` },
+    { "@type": "ListItem", position: 2, name: "Prompts", item: `${siteBase}${promptsIndex()}` },
+    { "@type": "ListItem", position: 3, name: entry.data.title, item: articleUrl },
+  ],
+};
+
+const article = {
   "@context": "https://schema.org",
   "@type": "Article",
   name: entry.data.title,
@@ -44,6 +56,8 @@ const structuredData = {
   }),
   ...(entry.data.tags?.length > 0 && { keywords: entry.data.tags.join(", ") }),
 };
+
+const structuredData = [article, breadcrumbList];
 ---
 
 <Layout

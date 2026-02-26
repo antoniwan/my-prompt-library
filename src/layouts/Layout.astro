@@ -3,14 +3,23 @@ import "../styles/global.css";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import SearchBar from "../components/SearchBar.astro";
 import { home, promptsIndex, tagsIndex, searchPage } from "../utils/urls";
-import { SITE_NAME, DEFAULT_DESCRIPTION } from "../data/site";
+import {
+  SITE_NAME,
+  DEFAULT_DESCRIPTION,
+  SITE_AUTHOR,
+  TWITTER_HANDLE,
+  OG_IMAGE_WIDTH,
+  OG_IMAGE_HEIGHT,
+  OG_IMAGE_ALT,
+} from "../data/site";
 import pkg from "../../package.json";
 
 interface Props {
   title?: string;
   description?: string;
   canonicalPath?: string;
-  structuredData?: object;
+  /** Single JSON-LD object or array of objects (e.g. Article + BreadcrumbList). */
+  structuredData?: object | object[];
   ogType?: "website" | "article";
   /** When true, adds robots noindex,nofollow (e.g. 404). */
   noindex?: boolean;
@@ -31,10 +40,12 @@ const {
 const canonicalHref =
   Astro.site && canonicalPath ? new URL(canonicalPath, Astro.site).href : undefined;
 const ogImageHref = Astro.site ? new URL("/share-image.png", Astro.site).href : undefined;
-const jsonLdSafe =
+const jsonLdItems =
   structuredData != null
-    ? JSON.stringify(structuredData).replace(/<\/script>/gi, "<\\/script>")
-    : "";
+    ? (Array.isArray(structuredData) ? structuredData : [structuredData]).map((item) =>
+        JSON.stringify(item).replace(/<\/script>/gi, "<\\/script>")
+      )
+    : [];
 
 const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--color-foreground:#fff;--color-muted:#e2e8f0;--color-border:#334155;--color-surface:#0f172a;--color-surface-hover:#1e293b;--color-accent:#0070f3;--color-accent-subtle:rgba(0,112,243,.08);--color-accent-border:rgba(0,112,243,.25)}[data-theme="light"]{--color-background:#fff;--color-foreground:#171717;--color-muted:#737373;--color-border:#e5e5e5;--color-surface:#fafafa;--color-surface-hover:#f5f5f5;--color-accent-subtle:rgba(0,112,243,.06);--color-accent-border:rgba(0,112,243,.35)}body{background:var(--color-background);color:var(--color-foreground);font-family:system-ui,sans-serif;line-height:1.6;margin:0;min-height:100vh}`;
 ---
@@ -75,6 +86,8 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="author" content={SITE_AUTHOR.name} />
+    <meta name="application-name" content={SITE_NAME} />
     {noindex && <meta name="robots" content="noindex,nofollow" />}
     <meta name="description" content={description} />
     {keywords && <meta name="keywords" content={keywords} />}
@@ -85,15 +98,26 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
     <meta property="og:type" content={ogType} />
     <meta property="og:locale" content="en" />
     {canonicalHref && <meta property="og:url" content={canonicalHref} />}
-    {ogImageHref && <meta property="og:image" content={ogImageHref} />}
+    {ogImageHref && (
+      <>
+        <meta property="og:image" content={ogImageHref} />
+        <meta property="og:image:width" content={String(OG_IMAGE_WIDTH)} />
+        <meta property="og:image:height" content={String(OG_IMAGE_HEIGHT)} />
+        <meta property="og:image:alt" content={OG_IMAGE_ALT} />
+      </>
+    )}
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={`@${TWITTER_HANDLE}`} />
+    <meta name="twitter:creator" content={`@${TWITTER_HANDLE}`} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     {ogImageHref && <meta name="twitter:image" content={ogImageHref} />}
     <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <title>{title}</title>
-    {jsonLdSafe && <script type="application/ld+json" set:html={jsonLdSafe} />}
+    {jsonLdItems.map((safe) => (
+      <script type="application/ld+json" set:html={safe} />
+    ))}
   </head>
   <body class="flex min-h-screen flex-col">
     <a href="#main" class="skip-link">Skip to main content</a>

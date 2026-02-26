@@ -3,31 +3,52 @@ import Layout from "../layouts/Layout.astro";
 import PromptCard from "../components/PromptCard.astro";
 import ButtonPrimary from "../components/ButtonPrimary.astro";
 import { getPublicPrompts } from "../data/prompts";
-import { SITE_NAME, DEFAULT_DESCRIPTION, SITE_AUTHOR } from "../data/site";
+import {
+  SITE_NAME,
+  DEFAULT_DESCRIPTION,
+  SITE_AUTHOR,
+  SITE_URL,
+  TWITTER_HANDLE,
+} from "../data/site";
 import { promptsIndex } from "../utils/urls";
 
 const allPrompts = await getPublicPrompts();
 const recentPrompts = allPrompts.slice(0, 5);
 
-const siteHref = Astro.site?.href ?? "";
-const structuredData = {
+const siteHref = Astro.site?.href ?? SITE_URL;
+const siteBase = siteHref.replace(/\/$/, "");
+
+const organizationId = `${siteBase}/#organization`;
+const organization = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": organizationId,
+  name: SITE_NAME,
+  url: siteBase,
+  sameAs: [`https://twitter.com/${TWITTER_HANDLE}`, SITE_AUTHOR.url],
+};
+
+const webSite = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: SITE_NAME,
   description: DEFAULT_DESCRIPTION,
   url: siteHref,
+  publisher: { "@id": organizationId },
   author: { "@type": "Person", name: SITE_AUTHOR.name, url: SITE_AUTHOR.url },
   ...(siteHref && {
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${siteHref.replace(/\/$/, "")}/search/?q={search_term_string}`,
+        urlTemplate: `${siteBase}/search/?q={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
     },
   }),
 };
+
+const structuredData = [organization, webSite];
 ---
 
 <Layout
