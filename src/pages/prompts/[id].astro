@@ -3,6 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import TagPill from "../../components/TagPill.astro";
 import { render } from "astro:content";
 import { getPublicPrompts } from "../../data/prompts";
+import { SITE_NAME } from "../../data/site";
 import { promptDetail } from "../../utils/urls";
 
 export async function getStaticPaths() {
@@ -23,19 +24,25 @@ const escapedMarkdown = rawMarkdown
   .replace(/>/g, "&gt;")
   .replace(/"/g, "&quot;");
 
-const title = `${entry.data.title} — My Prompt Library`;
+const title = `${entry.data.title} — ${SITE_NAME}`;
 const description =
   entry.data.summary ||
-  (entry.data.title && `${entry.data.title}. A prompt from My Prompt Library.`);
+  (entry.data.title && `${entry.data.title}. A prompt from ${SITE_NAME}.`);
 const canonicalPath = promptDetail(entry.id);
+const articleUrl = Astro.site ? new URL(canonicalPath, Astro.site).href : undefined;
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "Article",
   name: entry.data.title,
   description: description,
   author: { "@type": "Person", name: entry.data.author },
+  datePublished: entry.data.created_at,
   dateModified: entry.data.updated_at,
-  ...(Astro.site && { url: new URL(canonicalPath, Astro.site).href }),
+  ...(articleUrl && {
+    url: articleUrl,
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+  }),
+  ...(entry.data.tags?.length > 0 && { keywords: entry.data.tags.join(", ") }),
 };
 ---
 

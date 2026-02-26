@@ -3,6 +3,7 @@ import "../styles/global.css";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import SearchBar from "../components/SearchBar.astro";
 import { home, promptsIndex, tagsIndex, searchPage } from "../utils/urls";
+import { SITE_NAME, DEFAULT_DESCRIPTION } from "../data/site";
 import pkg from "../../package.json";
 
 interface Props {
@@ -11,14 +12,20 @@ interface Props {
   canonicalPath?: string;
   structuredData?: object;
   ogType?: "website" | "article";
+  /** When true, adds robots noindex,nofollow (e.g. 404). */
+  noindex?: boolean;
+  /** Optional comma-separated or single keywords for meta keywords. */
+  keywords?: string;
 }
 
 const {
-  title = "My Prompt Library",
-  description = "A Git-native library of plain-text prompts for AI workflows you control.",
+  title = SITE_NAME,
+  description = DEFAULT_DESCRIPTION,
   canonicalPath,
   structuredData,
   ogType = "website",
+  noindex = false,
+  keywords,
 } = Astro.props;
 
 const canonicalHref =
@@ -68,11 +75,15 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
     <meta name="description" content={description} />
+    {keywords && <meta name="keywords" content={keywords} />}
     {canonicalHref && <link rel="canonical" href={canonicalHref} />}
+    <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={ogType} />
+    <meta property="og:locale" content="en" />
     {canonicalHref && <meta property="og:url" content={canonicalHref} />}
     {ogImageHref && <meta property="og:image" content={ogImageHref} />}
     <meta name="twitter:card" content="summary_large_image" />
@@ -143,7 +154,7 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
     >
       <div class="flex flex-col items-center justify-center gap-1 text-center sm:flex-row sm:gap-3">
         <p class="m-0 text-xs text-[var(--color-muted)]">
-          My Prompt Library — Markdown prompts in a Git repo, portable by design.
+          {SITE_NAME} — Markdown prompts in a Git repo, portable by design.
         </p>
         <span class="hidden text-[var(--color-border)] sm:inline" aria-hidden="true">·</span>
         <p class="m-0 text-xs text-[var(--color-muted)]">

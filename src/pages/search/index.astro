@@ -7,6 +7,7 @@ import {
   getUniqueAuthors,
   DIFFICULTIES,
 } from "../../data/prompts";
+import { SITE_NAME } from "../../data/site";
 import { filterSelectClassesSearch } from "../../utils/classes";
 import { PROMPT_PATH_PREFIX, PROMPT_PATH_SUFFIX } from "../../utils/urls";
 
@@ -29,8 +30,9 @@ const filterOptions = {
 ---
 
 <Layout
-  title="Search — My Prompt Library"
+  title={`Search — ${SITE_NAME}`}
   description="Search prompts by keyword, tag, difficulty, or author."
+  canonicalPath="/search/"
 >
   <PageHeader title="Search" description="Search by keyword, tag, difficulty, or author." />
 

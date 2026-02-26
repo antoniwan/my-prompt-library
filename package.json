@@ -1,10 +1,15 @@
 {
   "name": "my-prompt-library",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "Antonio Rodriguez Martinez",
     "url": "https://github.com/antoniwan"
+  },
+  "homepage": "https://mpl.antoniwan.online/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antoniwan/my-prompt-library"
   },
   "scripts": {
     "dev": "astro dev",

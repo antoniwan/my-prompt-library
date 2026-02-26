@@ -8,6 +8,7 @@ import {
   getUniqueAuthors,
   DIFFICULTIES,
 } from "../../data/prompts";
+import { SITE_NAME } from "../../data/site";
 import { promptsIndex } from "../../utils/urls";
 import { filterSelectClasses } from "../../utils/classes";
 
@@ -15,11 +16,35 @@ const prompts = await getPublicPrompts();
 const tags = getUniqueTags(prompts);
 const authors = getUniqueAuthors(prompts);
 const difficulties = DIFFICULTIES;
+
+const siteHref = Astro.site?.href ?? "";
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: `Prompts — ${SITE_NAME}`,
+  description: "Browse all curated prompts. Filter by tag, difficulty, and author.",
+  url: siteHref ? `${siteHref.replace(/\/$/, "")}/prompts/` : undefined,
+  ...(siteHref &&
+    prompts.length > 0 && {
+      mainEntity: {
+        "@type": "ItemList",
+        numberOfItems: prompts.length,
+        itemListElement: prompts.slice(0, 30).map((entry, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          url: `${siteHref.replace(/\/$/, "")}/prompts/${entry.id}/`,
+          name: entry.data.title,
+        })),
+      },
+    }),
+};
 ---
 
 <Layout
-  title="Prompts — My Prompt Library"
+  title={`Prompts — ${SITE_NAME}`}
   description="Browse all curated prompts. Filter by tag, difficulty, and author."
+  canonicalPath="/prompts/"
+  structuredData={structuredData}
 >
   <PageHeader
     title="Prompts"

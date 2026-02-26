@@ -3,7 +3,8 @@ import Layout from "../../layouts/Layout.astro";
 import PageHeader from "../../components/PageHeader.astro";
 import PromptCard from "../../components/PromptCard.astro";
 import { getPublicPrompts, getUniqueTags } from "../../data/prompts";
-import { tagsIndex } from "../../utils/urls";
+import { SITE_NAME } from "../../data/site";
+import { tagsIndex, tagDetail } from "../../utils/urls";
 
 export async function getStaticPaths() {
   const prompts = await getPublicPrompts();
@@ -17,9 +18,38 @@ export async function getStaticPaths() {
 const { tag } = Astro.props;
 const allPrompts = await getPublicPrompts();
 const prompts = allPrompts.filter((entry) => entry.data.tags.includes(tag));
+
+const canonicalPath = tagDetail(tag);
+const siteHref = Astro.site?.href ?? "";
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: `Prompts tagged with ${tag} — ${SITE_NAME}`,
+  description: `Prompts tagged with ${tag}.`,
+  ...(siteHref && { url: new URL(canonicalPath, siteHref).href }),
+  ...(siteHref &&
+    prompts.length > 0 && {
+      mainEntity: {
+        "@type": "ItemList",
+        numberOfItems: prompts.length,
+        itemListElement: prompts.slice(0, 30).map((entry, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          url: `${siteHref.replace(/\/$/, "")}/prompts/${entry.id}/`,
+          name: entry.data.title,
+        })),
+      },
+    }),
+};
 ---
 
-<Layout title={`${tag} — Tags — My Prompt Library`} description={`Prompts tagged with ${tag}.`}>
+<Layout
+  title={`${tag} — Tags — ${SITE_NAME}`}
+  description={`Prompts tagged with ${tag}.`}
+  canonicalPath={canonicalPath}
+  structuredData={structuredData}
+  keywords={tag}
+>
   <PageHeader title={`Tag: ${tag}`}>
     <p class="m-0">
       <a href={tagsIndex()} class="text-[var(--color-accent)] hover:underline">All tags</a>

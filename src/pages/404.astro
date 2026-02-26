@@ -2,12 +2,14 @@
 import Layout from "../layouts/Layout.astro";
 import PageHeader from "../components/PageHeader.astro";
 import ButtonPrimary from "../components/ButtonPrimary.astro";
+import { SITE_NAME } from "../data/site";
 import { home, promptsIndex } from "../utils/urls";
 ---
 
 <Layout
-  title="Page not found — My Prompt Library"
+  title={`Page not found — ${SITE_NAME}`}
   description="The page you’re looking for doesn’t exist. Browse the prompt library or return home."
+  noindex
 >
   <PageHeader title="Page not found" description="The page you’re looking for doesn’t exist." />
 

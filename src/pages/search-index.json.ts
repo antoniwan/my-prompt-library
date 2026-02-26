@@ -3,6 +3,7 @@
  * Served as /search-index.json. Keeps full index out of every page HTML.
  */
 import { getPublicPrompts, getTagCounts } from "../data/prompts";
+import { SITE_NAME } from "../data/site";
 import { home, promptsIndex, tagsIndex, searchPage, promptDetail, tagDetail } from "../utils/urls";
 
 export const prerender = true;
@@ -12,7 +13,7 @@ const PAGE_ENTRIES = [
     type: "page" as const,
     id: "home",
     title: "Home",
-    description: "Overview of My Prompt Library",
+    description: `Overview of ${SITE_NAME}`,
     url: home(),
   },
   {
