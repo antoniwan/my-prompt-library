@@ -282,8 +282,8 @@ From `package.json`:
   - Start with unit tests for the content schema and migration script.
   - Add a GitHub Actions workflow for build, lint, and tests on PRs.
   *Vitest added with Astro getViteConfig; prompt schema extracted to `src/schema/prompt.ts` and unit-tested; `src/data/prompts.ts` helpers (getUniqueTags, getUniqueAuthors, getTagCounts, DIFFICULTIES) covered by tests. GitHub Actions workflow `.github/workflows/ci.yml` runs on push/PR to main: install, lint, format:check, test, build. Migration script tests deferred to roadmap item 7.*
-7. **Set `site` in `astro.config.mjs`**
-  - Improve SEO and consistency of structured data URLs.
+7. **Set `site` in `astro.config.mjs`** ✓ *Done*
+  - Improve SEO and consistency of structured data URLs. *`site` set from `process.env.SITE` with fallback `https://example.com`; canonical and og:url in Layout and prompt pages now resolve correctly when SITE is set in production.*
 8. **Deduplicate constants and utilities**
   - Extract difficulties, URL helpers, and shared class names/variants where appropriate.
 9. **Optional performance tweaks**

@@ -19,7 +19,9 @@ Or with pnpm:
 pnpm install
 ```
 
-No environment variables are required.
+No environment variables are required for local development.
+
+For production, set **`SITE`** to your site’s full URL (e.g. `https://your-domain.com`) so canonical links and Open Graph URLs are correct. Many hosts (Vercel, Netlify, Cloudflare Pages) provide a default URL you can use or override.
 
 ## Run
 
