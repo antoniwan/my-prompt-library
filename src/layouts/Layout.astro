@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import SearchBar from "../components/SearchBar.astro";
+import BackToTop from "../components/BackToTop.astro";
 import { home, promptsIndex, tagsIndex, searchPage } from "../utils/urls";
 import {
   SITE_NAME,
@@ -195,6 +196,7 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
         </a>
       </div>
     </footer>
+    <BackToTop />
     <script>
       import { inject } from "@vercel/analytics";
       inject();

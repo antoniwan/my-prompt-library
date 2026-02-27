@@ -1,0 +1,57 @@
+<button
+  type="button"
+  class="back-to-top fixed bottom-6 right-4 z-40 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-xs font-medium text-[var(--color-foreground)] shadow-lg outline-none sm:bottom-8 sm:right-6 sm:text-sm hover:bg-[var(--color-surface-hover)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]/50"
+  data-back-to-top
+  aria-label="Back to top"
+>
+  ↑ Top
+</button>
+
+<script>
+  if (typeof window !== "undefined") {
+    const button = document.querySelector<HTMLButtonElement>("[data-back-to-top]");
+    if (!button) {
+      // No button found; nothing to initialize.
+    } else {
+      const showThreshold = 320;
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+
+      const updateVisibility = () => {
+        const isVisible = window.scrollY > showThreshold;
+        button.setAttribute("data-visible", String(isVisible));
+      };
+
+      updateVisibility();
+      window.addEventListener("scroll", updateVisibility, { passive: true });
+
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (prefersReducedMotion) {
+          window.scrollTo(0, 0);
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+    }
+  }
+</script>
+
+<style>
+  .back-to-top {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(0.5rem);
+    transition:
+      opacity var(--duration-normal) var(--ease-out),
+      transform var(--duration-normal) var(--ease-out);
+  }
+
+  .back-to-top[data-visible="true"] {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+</style>
+
