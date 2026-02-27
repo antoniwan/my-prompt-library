@@ -92,7 +92,7 @@ const filterOptions = {
   </div>
 </Layout>
 
-<script define:vars={{ searchIndex, PROMPT_PATH_PREFIX, PROMPT_PATH_SUFFIX }}>
+<script is:inline define:vars={{ searchIndex, PROMPT_PATH_PREFIX, PROMPT_PATH_SUFFIX }}>
   if (typeof window !== "undefined") {
     function initSearch() {
       const form = document.querySelector('form[role="search"]');

@@ -130,13 +130,10 @@ const structuredData = {
     ) as HTMLSelectElement | null;
     const selectAuthor = document.getElementById("filter-author") as HTMLSelectElement | null;
     const selectTag = document.getElementById("filter-tag") as HTMLSelectElement | null;
-    /** @type {HTMLUListElement | null} */
-    const list = document.querySelector("[data-prompts-list]");
-    /** @type {HTMLElement | null} */
-    const emptyEl = document.getElementById("prompts-empty");
+    const list = document.querySelector("[data-prompts-list]") as HTMLUListElement | null;
+    const emptyEl = document.getElementById("prompts-empty") as HTMLElement | null;
 
-    /** @type {HTMLElement[]} */
-    const items = list ? Array.from(list.querySelectorAll("[data-prompt-item]")) : [];
+    const items: HTMLElement[] = list ? Array.from(list.querySelectorAll<HTMLElement>("[data-prompt-item]")) : [];
 
     function applyFiltersFromState() {
       const difficulty = (selectDifficulty && selectDifficulty.value) || "";

@@ -7,7 +7,6 @@ function mockEntry(
 ): CollectionEntry<"prompts"> {
   return {
     id: "mock-id",
-    slug: "mock-prompt",
     body: "",
     collection: "prompts",
     data: {
@@ -21,7 +20,6 @@ function mockEntry(
       updated_at: "2025-01-01",
       ...overrides,
     },
-    render: async () => ({ Content: () => null, headings: [], metadata: {} }),
   };
 }
 

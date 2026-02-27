@@ -117,7 +117,7 @@ const criticalCSS = `:root,[data-theme="dark"]{--color-background:#0f172a;--colo
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <title>{title}</title>
     {jsonLdItems.map((safe) => (
-      <script type="application/ld+json" set:html={safe} />
+      <script type="application/ld+json" is:inline set:html={safe} />
     ))}
   </head>
   <body class="flex min-h-screen flex-col">

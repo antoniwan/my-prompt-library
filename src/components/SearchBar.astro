@@ -60,8 +60,40 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
 <script>
   const SEARCH_INDEX_URL = "/search-index.json";
 
+  type SearchIndexItem = {
+    type: "prompt" | "tag" | "page";
+    title: string;
+    description?: string;
+    url: string;
+    tags?: string[];
+    difficulty?: string;
+    author?: string;
+    id?: string;
+    count?: number;
+  };
+
+  type TypeConfig = { label: string; badgeClass: string };
+
+  const TYPE_CONFIGS: Record<"prompt" | "tag" | "page", TypeConfig> = {
+    prompt: { label: "Prompt", badgeClass: "mpl-type-prompt" },
+    tag: { label: "Tag", badgeClass: "mpl-type-tag" },
+    page: { label: "Page", badgeClass: "mpl-type-page" },
+  };
+
   class SearchBar {
-    constructor(root) {
+    root: Element;
+    input: HTMLInputElement | null;
+    results: Element | null;
+    resultsList: Element | null;
+    loading: Element | null;
+    noResults: Element | null;
+    clearBtn: Element | null;
+    data: SearchIndexItem[] | null;
+    dataPromise: Promise<SearchIndexItem[]> | null;
+    debounceTimer: ReturnType<typeof setTimeout> | null;
+    isSearching: boolean;
+
+    constructor(root: Element) {
       this.root = root;
       this.input = root.querySelector(".mpl-search-input");
       this.results = root.querySelector(".mpl-search-dropdown");
@@ -77,7 +109,7 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
       this.init();
     }
 
-    async fetchIndex() {
+    async fetchIndex(): Promise<SearchIndexItem[]> {
       if (this.data) return this.data;
       if (this.dataPromise) return this.dataPromise;
       this.dataPromise = fetch(SEARCH_INDEX_URL)
@@ -107,13 +139,14 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
         this.clearBtn.addEventListener("click", () => this.clearSearch());
       }
 
-      document.addEventListener("click", (event) => {
-        if (!this.root.contains(event.target)) {
+      document.addEventListener("click", (event: MouseEvent) => {
+        const target = event.target as Node | null;
+        if (target && !this.root.contains(target)) {
           this.hideResults();
         }
       });
 
-      this.input.addEventListener("keydown", (event) => {
+      this.input.addEventListener("keydown", (event: KeyboardEvent) => {
         if (event.key === "Escape") {
           this.hideResults();
           this.input?.blur();
@@ -147,7 +180,7 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
       }, 200);
     }
 
-    async performSearch(query) {
+    async performSearch(query: string) {
       if (this.isSearching) return;
       this.isSearching = true;
 
@@ -167,7 +200,7 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
       }
     }
 
-    search(query) {
+    search(query: string): SearchIndexItem[] {
       const searchData = this.data ?? [];
       if (!Array.isArray(searchData) || searchData.length === 0) return [];
 
@@ -180,12 +213,12 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
         let extraMatch = false;
 
         if (item.type === "prompt") {
-          const tagsMatch = (item.tags ?? []).some((tag) => tag.toLowerCase().includes(normalized));
+          const tagsMatch = (item.tags ?? []).some((tag: string) => tag.toLowerCase().includes(normalized));
           const difficultyMatch = item.difficulty?.toLowerCase().includes(normalized);
           const authorMatch = item.author?.toLowerCase().includes(normalized);
-          extraMatch = tagsMatch || difficultyMatch || authorMatch;
+          extraMatch = Boolean(tagsMatch || difficultyMatch || authorMatch);
         } else if (item.type === "tag") {
-          extraMatch = item.id?.toLowerCase().includes(normalized);
+          extraMatch = Boolean(item.id?.toLowerCase().includes(normalized));
         }
 
         return titleMatch || descriptionMatch || extraMatch;
@@ -202,7 +235,7 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
 
         if (item.type === "prompt") {
           score += 4;
-          if ((item.tags ?? []).some((tag) => tag.toLowerCase().includes(normalized))) {
+          if ((item.tags ?? []).some((tag: string) => tag.toLowerCase().includes(normalized))) {
             score += 2;
           }
           if (item.author && item.author.toLowerCase().includes(normalized)) {
@@ -229,7 +262,7 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
       return scored.slice(0, 10);
     }
 
-    displayResults(results) {
+    displayResults(results: SearchIndexItem[]) {
       if (!this.resultsList) return;
 
       this.hideLoading();
@@ -304,23 +337,8 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
       this.showResults();
     }
 
-    getTypeConfig(type) {
-      const configs = {
-        prompt: {
-          label: "Prompt",
-          badgeClass: "mpl-type-prompt",
-        },
-        tag: {
-          label: "Tag",
-          badgeClass: "mpl-type-tag",
-        },
-        page: {
-          label: "Page",
-          badgeClass: "mpl-type-page",
-        },
-      };
-
-      return configs[type] ?? configs.page;
+    getTypeConfig(type: string): TypeConfig {
+      return type in TYPE_CONFIGS ? TYPE_CONFIGS[type as keyof typeof TYPE_CONFIGS] : TYPE_CONFIGS.page;
     }
 
     showResults() {
@@ -352,12 +370,12 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
       if (this.loading) this.loading.classList.add("hidden");
     }
 
-    showNoResults(options = {}) {
+    showNoResults(options: { title?: string; hint?: string } = {}) {
       if (this.noResults) {
-        const title = this.noResults.querySelector("[data-default-title]");
-        const hint = this.noResults.querySelector("[data-default-hint]");
-        if (title) title.textContent = options.title ?? "No results found";
-        if (hint) hint.textContent = options.hint ?? "Try another keyword, tag, or page name.";
+        const titleEl = this.noResults.querySelector("[data-default-title]");
+        const hintEl = this.noResults.querySelector("[data-default-hint]");
+        if (titleEl) titleEl.textContent = options.title ?? "No results found";
+        if (hintEl) hintEl.textContent = options.hint ?? "Try another keyword, tag, or page name.";
         this.noResults.classList.remove("hidden");
       }
       if (this.loading) this.loading.classList.add("hidden");
@@ -380,12 +398,12 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
       }
     }
 
-    handleArrowKeys(key) {
+    handleArrowKeys(key: string) {
       if (!this.resultsList) return;
-      const items = this.resultsList.querySelectorAll(".mpl-search-result-item");
+      const items = this.resultsList.querySelectorAll<HTMLElement>(".mpl-search-result-item");
       if (!items.length) return;
 
-      const activeIndex = Array.from(items).findIndex((el) =>
+      const activeIndex = Array.from(items).findIndex((el: Element) =>
         el.classList.contains("mpl-search-result-item--active")
       );
 
@@ -396,7 +414,7 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
         nextIndex = activeIndex > 0 ? activeIndex - 1 : items.length - 1;
       }
 
-      items.forEach((el) => el.classList.remove("mpl-search-result-item--active"));
+      items.forEach((el: Element) => el.classList.remove("mpl-search-result-item--active"));
 
       const next = items[nextIndex];
       next.classList.add("mpl-search-result-item--active");
@@ -406,12 +424,12 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
     handleEnterKey() {
       if (!this.resultsList) return;
       const active = this.resultsList.querySelector(".mpl-search-result-item--active");
-      if (active) {
+      if (active instanceof HTMLElement) {
         active.click();
       }
     }
 
-    escapeAttribute(value) {
+    escapeAttribute(value: string) {
       const div = document.createElement("div");
       div.textContent = String(value);
       return div.innerHTML;
