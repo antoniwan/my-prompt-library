@@ -25,4 +25,5 @@ export const OG_IMAGE_WIDTH = 1200;
 export const OG_IMAGE_HEIGHT = 630;
 
 /** Alt text for the default share image. */
-export const OG_IMAGE_ALT = "My Prompt Library — Markdown prompts in a Git repo, portable by design.";
+export const OG_IMAGE_ALT =
+  "My Prompt Library — Markdown prompts in a Git repo, portable by design.";

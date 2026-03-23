@@ -59,20 +59,12 @@ const filterOptions = {
         {filterOptions.difficulties.map((d) => <option value={d}>{d}</option>)}
       </select>
       <label for="filter-author" class="text-sm text-[var(--color-muted)]">Author</label>
-      <select
-        id="filter-author"
-        class={filterSelectClassesSearch}
-        aria-label="Filter by author"
-      >
+      <select id="filter-author" class={filterSelectClassesSearch} aria-label="Filter by author">
         <option value="">All</option>
         {filterOptions.authors.map((a) => <option value={a}>{a}</option>)}
       </select>
       <label for="filter-tag" class="text-sm text-[var(--color-muted)]">Tag</label>
-      <select
-        id="filter-tag"
-        class={filterSelectClassesSearch}
-        aria-label="Filter by tag"
-      >
+      <select id="filter-tag" class={filterSelectClassesSearch} aria-label="Filter by tag">
         <option value="">All</option>
         {filterOptions.tags.map((t) => <option value={t}>{t}</option>)}
       </select>

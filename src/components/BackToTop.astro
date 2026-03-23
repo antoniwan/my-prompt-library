@@ -14,9 +14,7 @@
       // No button found; nothing to initialize.
     } else {
       const showThreshold = 320;
-      const prefersReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       const updateVisibility = () => {
         const isVisible = window.scrollY > showThreshold;
@@ -54,4 +52,3 @@
     transform: translateY(0);
   }
 </style>
-

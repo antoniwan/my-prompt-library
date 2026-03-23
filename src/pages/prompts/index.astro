@@ -84,12 +84,7 @@ const structuredData = {
         {authors.map((a) => <option value={a}>{a}</option>)}
       </select>
       <label for="filter-tag" class="sr-only">Tag</label>
-      <select
-        id="filter-tag"
-        name="tag"
-        class={filterSelectClasses}
-        aria-label="Filter by tag"
-      >
+      <select id="filter-tag" name="tag" class={filterSelectClasses} aria-label="Filter by tag">
         <option value="">All tags</option>
         {tags.map((t) => <option value={t}>{t}</option>)}
       </select>
@@ -133,7 +128,9 @@ const structuredData = {
     const list = document.querySelector("[data-prompts-list]") as HTMLUListElement | null;
     const emptyEl = document.getElementById("prompts-empty") as HTMLElement | null;
 
-    const items: HTMLElement[] = list ? Array.from(list.querySelectorAll<HTMLElement>("[data-prompt-item]")) : [];
+    const items: HTMLElement[] = list
+      ? Array.from(list.querySelectorAll<HTMLElement>("[data-prompt-item]"))
+      : [];
 
     function applyFiltersFromState() {
       const difficulty = (selectDifficulty && selectDifficulty.value) || "";

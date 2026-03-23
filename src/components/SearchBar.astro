@@ -213,7 +213,9 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
         let extraMatch = false;
 
         if (item.type === "prompt") {
-          const tagsMatch = (item.tags ?? []).some((tag: string) => tag.toLowerCase().includes(normalized));
+          const tagsMatch = (item.tags ?? []).some((tag: string) =>
+            tag.toLowerCase().includes(normalized)
+          );
           const difficultyMatch = item.difficulty?.toLowerCase().includes(normalized);
           const authorMatch = item.author?.toLowerCase().includes(normalized);
           extraMatch = Boolean(tagsMatch || difficultyMatch || authorMatch);
@@ -338,7 +340,9 @@ const searchId = `search-${Math.random().toString(36).slice(2, 9)}`;
     }
 
     getTypeConfig(type: string): TypeConfig {
-      return type in TYPE_CONFIGS ? TYPE_CONFIGS[type as keyof typeof TYPE_CONFIGS] : TYPE_CONFIGS.page;
+      return type in TYPE_CONFIGS
+        ? TYPE_CONFIGS[type as keyof typeof TYPE_CONFIGS]
+        : TYPE_CONFIGS.page;
     }
 
     showResults() {

@@ -8,8 +8,7 @@ export const prerender = true;
 
 export const GET: APIRoute = ({ site }) => {
   const sitemapURL = site ? new URL("sitemap-index.xml", site).href : "";
-  const body =
-    "User-agent: *\nAllow: /\n" + (sitemapURL ? `\nSitemap: ${sitemapURL}\n` : "");
+  const body = "User-agent: *\nAllow: /\n" + (sitemapURL ? `\nSitemap: ${sitemapURL}\n` : "");
   return new Response(body, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
