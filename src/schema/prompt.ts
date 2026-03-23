@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "astro:content";
 
 /** Difficulty levels for prompts. Single source of truth for schema and UI. */
 export const DIFFICULTIES = ["beginner", "intermediate", "advanced"] as const;
@@ -23,4 +23,3 @@ export const promptSchema = z.object({
   quality_score: z.number().min(0).max(5).optional(),
 });
 
-export type PromptFrontmatter = z.infer<typeof promptSchema>;
