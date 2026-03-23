@@ -1,4 +1,4 @@
-import { z } from "astro:content";
+import { z } from "astro/zod";
 
 /** Difficulty levels for prompts. Single source of truth for schema and UI. */
 export const DIFFICULTIES = ["beginner", "intermediate", "advanced"] as const;
