@@ -1,72 +1,41 @@
-# My Prompt Library (MPL)
+# My Prompt Library (MPL) — Archived
 
-A small, Git-native library of structured prompts. Markdown files in this repository are the source of truth. There is no database or runtime backend.
+**This repo is archived.** The live demo at [my-prompt-library-lilac.vercel.app](https://my-prompt-library-lilac.vercel.app) is retired.
 
-## Prerequisites
+## What happened
 
-- **Node.js** 18+ (Astro 5 requirement; repo does not pin a version)
-- **npm** or **pnpm**
+This was a Git-native library of structured prompts: Markdown files, Astro site, copy-to-clipboard UX. That pattern made sense when you pasted prompts into ChatGPT by hand.
 
-## Setup
+**Prompt libraries are obsolete.** Cursor, Codex, and Claude Code use **agent skills**: the same protocols, but loaded automatically when the task matches. No copy-paste. No separate browse-and-copy site.
 
-```bash
-npm install
-```
+All five prompts from this repo were converted to skills in my private skills repo and removed from active maintenance here.
 
-Or with pnpm:
+## Where the content went
 
-```bash
-pnpm install
-```
+| Prompt | Skill name |
+| --- | --- |
+| Add Light/Dark Theme Support | `add-light-dark-theme` |
+| Conversation Digest Generator | `conversation-digest` |
+| Daily Digest Processor (For Cursor AI) | `daily-digest-processor` |
+| Meeting Summary | `meeting-summary` |
+| Sales Follow-Up Email | `sales-follow-up-email` |
 
-No environment variables are required for local development.
+Skills live in `antoniwan/my-agentic-skills` (private). If you forked prompts from here, treat the Markdown under `content/prompts/` as the last public snapshot.
 
-For production, set **`SITE`** to your site’s full URL (e.g. `https://your-domain.com`) so canonical links and Open Graph URLs are correct. Many hosts (Vercel, Netlify, Cloudflare Pages) provide a default URL you can use or override.
+## If you landed here from a link
 
-## Run
+- **Old blog or profile link:** The prompt library is sunset. Use agent skills in your AI tool of choice instead.
+- **Fork or clone:** You can still read `content/prompts/` for reference. Do not expect updates or a working deploy without restoring dependencies yourself.
+- **Contributing:** PRs are not accepted on archived repos.
 
-```bash
-npm run dev
-```
+## Historical stack (for archaeologists)
 
-Open **[http://localhost:4321](http://localhost:4321)**. You should see the home page and be able to open **Prompts**, open a prompt, use the search bar, and filter on `/prompts/` by tag, difficulty, and author.
+- `content/prompts/` — Markdown prompt files (frontmatter + body)
+- Astro static site, client-side search
+- Deployed to Vercel as a static export
 
-## Project Structure
+Prior setup and dev docs are in git history before Aug 2026.
 
-| Path                    | Purpose                                                                                                    |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `content/prompts/`      | Prompt Markdown files. Filename (without `.md`) = URL slug.                                                |
-| `src/content.config.ts` | Content collection schema (Zod). Defines required frontmatter and validation. See also `PROMPT-SCHEMA.md`. |
-| `src/pages/`            | Astro routes: `/`, `/prompts/`, `/prompts/[id]/`, `/tags/`, `/tags/[tag]/`, `/search/`, `/404`.            |
-| `src/layouts/`          | Shared layout (header, footer, theme, search).                                                             |
-| `src/components/`       | Reusable UI: `PromptCard`, `TagPill`, `SearchBar`, `ThemeToggle`, `PageHeader`, `ButtonPrimary`.           |
-| `src/styles/global.css` | Global design tokens and Tailwind import.                                                                  |
-| `public/`               | Static assets (favicons, PWA, images).                                                                     |
+## License
 
-## How to Make a Change
-
-**Add a prompt**
-
-1. Add a new `.md` file under `content/prompts/`. Use the filename as the slug (e.g. `my-prompt-name.md` → slug `my-prompt-name`).
-2. Include required frontmatter (canonical reference: `PROMPT-SCHEMA.md` and `src/content.config.ts`): `title`, `slug`, `tags` (array), `author`, `difficulty` (`beginner` | `intermediate` | `advanced`), `visibility` (`public` | `draft`, default `public`), `created_at`, `updated_at` (YYYY-MM-DD). Optional: `summary`, `models_tested` (array of strings), `quality_score` (number 0–5).
-3. Run `npm run dev` and open `/prompts/` or the new `/prompts/<slug>/` to confirm it appears. Only `visibility: public` entries are shown on the site.
-
-**Modify behavior or UI**
-
-- Edit the relevant page in `src/pages/`, component in `src/components/`, or layout in `src/layouts/`. Styling: `src/styles/global.css` or Tailwind classes in components.
-
-**Test and verify**
-
-- `npm run dev` — confirm locally.
-- `npm run build` — must complete without errors. Preview with `npm run preview`.
-- `npm run lint` — ESLint (Astro + TypeScript). Fix auto-applied where possible.
-- `npm run format` — Prettier (including `.astro`). Use `npm run format:check` to verify without writing.
-
-Validation is via the content schema (build fails if frontmatter is invalid), lint, and manual checks.
-
-## Known Constraints
-
-- **Slug = filename:** The prompt URL is `/prompts/<id>/`. With the glob loader, `id` is the file path relative to `content/prompts/` without the `.md` extension. The `slug` in frontmatter should match the filename (e.g. `my-prompt.md` → `slug: my-prompt`). Mismatches can break links.
-- **Visibility:** Only entries with `visibility: public` are included in lists, tags, search, and `getStaticPaths`. `draft` entries exist in the repo but are never rendered on the site.
-- **Schema is strict:** Adding or changing frontmatter fields requires updating `src/content.config.ts` (Zod schema). Invalid or missing required fields cause the build to fail.
-- **Search index:** Header search and the `/search/` page each build their own in-memory index from the prompts collection; there is no shared search module. Changing what’s searchable (e.g. new fields) may require edits in both `SearchBar.astro` and `search/index.astro`.
+See repository license.
