@@ -1,18 +1,26 @@
-# My Prompt Library (MPL) — Archived
+# My Prompt Library (MPL)
 
-**This repo is archived.** The live demo at [my-prompt-library-lilac.vercel.app](https://my-prompt-library-lilac.vercel.app) is retired.
+## Status
 
-## What happened
+This repository is archived. Date: August 2026.
 
-This was a Git-native library of structured prompts: Markdown files, Astro site, copy-to-clipboard UX. That pattern made sense when you pasted prompts into ChatGPT by hand.
+The Vercel site at [my-prompt-library-lilac.vercel.app](https://my-prompt-library-lilac.vercel.app) is not active.
 
-**Prompt libraries are obsolete.** Cursor, Codex, and Claude Code use **agent skills**: the same protocols, but loaded automatically when the task matches. No copy-paste. No separate browse-and-copy site.
+## Purpose (historical)
 
-All five prompts from this repo were converted to skills in my private skills repo and removed from active maintenance here.
+This repository stored prompts as Markdown files. An Astro site let users browse and copy prompts.
 
-## Where the content went
+## Change
 
-| Prompt | Skill name |
+Prompts are now agent skills. Tools that support skills load a skill when the task matches. You do not copy text by hand.
+
+Supported tools: Cursor, Codex, Claude Code.
+
+All five prompts in this repository were moved to the private repository `antoniwan/my-agentic-skills`.
+
+## Prompt to skill map
+
+| Prompt | Skill |
 | --- | --- |
 | Add Light/Dark Theme Support | `add-light-dark-theme` |
 | Conversation Digest Generator | `conversation-digest` |
@@ -20,22 +28,18 @@ All five prompts from this repo were converted to skills in my private skills re
 | Meeting Summary | `meeting-summary` |
 | Sales Follow-Up Email | `sales-follow-up-email` |
 
-Skills live in `antoniwan/my-agentic-skills` (private). If you forked prompts from here, treat the Markdown under `content/prompts/` as the last public snapshot.
+## Files
 
-## If you landed here from a link
+Prompt source files are in `content/prompts/`. This is the last public copy.
 
-- **Old blog or profile link:** The prompt library is sunset. Use agent skills in your AI tool of choice instead.
-- **Fork or clone:** You can still read `content/prompts/` for reference. Do not expect updates or a working deploy without restoring dependencies yourself.
-- **Contributing:** PRs are not accepted on archived repos.
+## Maintenance
 
-## Historical stack (for archaeologists)
+This repository does not receive updates. Do not open pull requests.
 
-- `content/prompts/` — Markdown prompt files (frontmatter + body)
-- Astro static site, client-side search
-- Deployed to Vercel as a static export
+## Setup (historical)
 
-Prior setup and dev docs are in git history before Aug 2026.
+Prior setup instructions are in git history before August 2026.
 
 ## License
 
-See repository license.
+See the repository license.
